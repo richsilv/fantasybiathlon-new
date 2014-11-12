@@ -1,0 +1,105 @@
+<template name="Admin">
+
+	<div class="uk-container uk-container-center">
+		<form class="uk-form">
+			<div class="uk-badge uk-badge-success uk-float-right uk-display-inline" data-action="add-field"><i class="uk-icon-large uk-icon-plus"></i></div>
+			<h3 class="uk-display-inline uk-float-left uk-margin-small">Query fields</h3>
+			<div class="uk-clearfix"></div>
+			<hr class="uk-margin-small-top">
+			{{#each fields}}
+			    <div class="uk-form-row">
+			        {{> controls}}
+			    </div>
+		    {{/each}}
+		    <div class="uk-margin-top"></div>
+	    	<div class="uk-form-controls uk-width-1-2 uk-display-inline">
+		    	<label for="recursive-checkbox">Recursive </label><input id="recursive-checkbox" type="checkbox" data-field="recursive">
+	    	</div>
+	    	<div class="uk-form-controls uk-width-1-2 uk-display-inline">
+		    	<label for="store-results-checkbox">Store Results </label><input id="store-results-checkbox" type="checkbox" data-field="store-results">
+	    	</div>
+		    <button type="button" class="uk-button uk-button-primary uk-button-large uk-margin-left" data-action="submit">Submit</button>
+		    <button type="button" class="uk-button uk-button-danger uk-button-large uk-margin-left uk-float-right" data-action="crawl-missing">Crawl Missing</button>		    
+		    <button type="button" class="uk-button uk-button-success uk-button-large uk-margin-left uk-float-right" data-action="update-points">Update Points</button>		    
+		    <div class="uk-badge uk-badge-warning uk-float-right uk-margin-right">Missing Queries: {{missingQueries}}<br>Missing Points: {{missingPoints}}</div>
+		</form>
+		{{> httpData}}
+		<br>
+		{{> athleteSettings}}
+	</div>
+
+</template>
+
+<template name="controls">
+    <div class="uk-form-controls">
+    	<div class="uk-grid">
+	    	<div class="uk-width-1-2">
+		    	<input type="text" class="uk-width-1-1" placeholder="Key" value={{key}} data-field="key">
+	        </div>
+	        <div class="uk-width-1-2">
+		        <input type="text" class="uk-width-1-1" placeholder="Value" value={{val}} data-field="val">
+	    	</div>
+    	</div>
+    </div>
+</template>
+
+<template name="httpData">
+	<div class="uk-panel uk-panel-box uk-margin-top">
+		<div class="uk-flex uk-flex-start">
+			{{> statObject methodData 'memStats'}}
+			{{> statObject methodData 'queueStats'}}
+			{{> statObject methodData 'callResults'}}
+			{{> statObject methodData 'storeRecords'}}
+		</div>
+	</div>
+</template>
+
+<template name="statObject">
+	{{#each keyVal this}}
+	<div class="uk-flex-item {{#if equals this.key 'key'}}uk-margin-large-left{{/if}}">
+		<h4>{{key}}: </h4>
+		<h3>{{numberWithCommas val}} </h3>
+	</div>
+	{{/each}}
+</template>
+
+<template name="athleteSettings">
+	<div class="uk-button-group uk-display-inline">
+	    <button class="uk-button uk-button-primary" data-action="automatic-points">Automatic Points</button>
+	    <button class="uk-button uk-button-success" data-action="activate-all">Activate All</button>
+	    <button class="uk-button uk-button-danger" data-action="deactivate-all">Deactivate All</button>
+	</div>
+	<div class="uk-display-inline uk-margin-left">
+		<label for="prop">Prop: </label><input id="prop" data-field="prop" type="number" value="0.5">
+		<label for="prop">Buffer: </label><input id="buffer" data-field="buffer" type="number" value="0.1">
+	</div>
+	<div class="uk-display-block uk-margin-top uk-container-center">
+		<form class="uk-form uk-form-horizontal uk-width-1-2"><label for="query">Query: </label><input type="text" data-field="query"></form>
+	</div>
+	<table class="uk-table uk-table-hover">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Average Points</th>
+				<th>Total Points</th>
+				<th>Races</th>
+				<th>Value</th>
+				<th>Active</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each athletes}}
+			    <tr>
+			    	<td>{{FamilyName}}, {{GivenName}}</td>
+			    	{{#with aggregate}}
+				    	<td class="uk-margin-small-left">{{dps averagePoints 2}}</td>
+				    	<td class="uk-margin-small-left">{{totalPoints}}</td>
+				    	<td class="uk-margin-small-left">{{races}}</td>
+			    	{{/with}}
+			    	<td><input type="number" data-field="value" class="uk-margin-small-left" value={{value}}></td>
+			    	<td><input type="checkbox" id="{{IBUId}}" checked={{active}} data-field="active"></td>
+		    	</tr>
+			{{/each}}			
+		</tbody>
+	</table>
+</template>

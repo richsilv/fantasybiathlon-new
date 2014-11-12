@@ -1,0 +1,26 @@
+# Meteor packages used by this project, one per line.
+#
+# 'meteor add' and 'meteor remove' will edit this file for you,
+# but you can also edit it by hand.
+
+meteor-platform
+aldeed:collection2
+bengott:avatar
+richsilv:cordova-notifications
+http
+accounts-twitter
+accounts-google
+accounts-facebook
+accounts-ui-unstyled
+meteorhacks:npm
+
+
+npm-container
+richsilv:uikit-sass
+iron:router
+mrt:moment
+percolatestudio:synced-cron
+mrt:later
+splendido:accounts-meld
+reactive-var
+
