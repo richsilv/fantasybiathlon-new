@@ -11,12 +11,17 @@ Template.Team.events({
 });
 
 Template.Team.helpers({
-  /*
-   * Example:
-   *  items: function () {
-   *    return Items.find();
-   *  }
-   */
+  tempAthletes: function() {
+    return Athletes.find({}, {limit: 4, skip: Math.floor(Math.random() * 400)});
+  }
+});
+
+Template.athlete.helpers({
+  athleteBackground: function (athlete) {
+    var bString = 'url(images/' + athlete.GenderId.toLowerCase() + 'avatar.png), ' + 
+                  'url(images/' + athlete.NAT + '.png)';
+    return bString;
+  }
 });
 
 /*****************************************************************************/

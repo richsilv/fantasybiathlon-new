@@ -1,3 +1,27 @@
 <template name="Team">
-  client/views/team/team.html
+  <div class="nav-panel dark-1 height-1-3">
+  	<h3 class="uk-margin-small-bottom">Name: </h3><h1 class="bright uk-margin-small-top uk-text-right">TeamName{{Name}}</h1>
+  	<h3 class="uk-margin-small-top uk-margin-small-bottom">Nation: </h3><h1 class="bright uk-margin-small-top uk-text-right">Nation{{NAT}}</h1>
+  </div>
+  <div class="nav-panel light-1 height-2-3">
+  {{> athleteBlock athletes=tempAthletes rows=2 cols=2 marginPct=1}}
+  </div>
+</template>
+
+<template name="athleteBlock">
+  	{{#each athletes}}
+  		{{> athlete}}
+  	{{/each}}
+</template>
+
+<template name="athlete">
+	<div class="athlete" style="height: {{toPercent ../rows ../marginPct}}%; width: {{toPercent ../cols ../marginPct}}%;">
+		<div class="athlete-background" style="background-image: {{athleteBackground this}};">
+		</div>
+		<div class="athlete-data">
+			<div class="show-row"><span><span class="uk-text-bold uk-text-large bright">{{FamilyName}}, {{GivenName}}</span></span></div>
+			<div class="show-row"><span>Value: <span class="uk-text-bold uk-text-large bright">{{value}}</span></span></div>
+			<div class="show-row"><span>Points: <span class="uk-text-bold uk-text-large bright">{{points}}</span></span></div>		
+		</div>
+	</div>
 </template>
