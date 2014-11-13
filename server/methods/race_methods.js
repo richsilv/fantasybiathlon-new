@@ -52,7 +52,7 @@ function checkEvents() {
 	var now = new Date(),
 		events = Events.find({StartDate: {$gt: now}});
 
-	event.forEach(function(event) {
+	events.forEach(function(event) {
 
 		_.each([1, 3, 7], function(days) {
 			var schedule = new moment(event.StartDate).subtract(days, 'd').toString();

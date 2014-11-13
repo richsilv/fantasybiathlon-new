@@ -5,6 +5,11 @@ CrawlerMatrix = new Mongo.Collection('crawler_matrix');
  *    return CrawlerMatrix.find({is_public: true});
  *  }
  */
+
+Schemas.CrawlerMatrix = new SimpleSchema({
+  
+});
+
 CrawlerMatrix.allow({
   insert: function (userId, doc) {
     return true;
