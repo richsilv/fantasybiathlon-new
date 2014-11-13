@@ -4,7 +4,9 @@
 _.extend(App, {
 	dps: function(num, dp) {
 		return ~~(num * Math.pow(10, dp))/Math.pow(10, dp);		
-	}
+	},
+	thisPage: new ReactiveVar('root'),
+	previousPage: new ReactiveVar(null)
 });
 
 App.helpers = {
@@ -40,3 +42,10 @@ $(document).on("keydown", function (e) {
         e.preventDefault();
     }
 });
+
+UI.body.rendered = function() {
+	$('body').hammer({
+/*		touchAction: 'pan-y',
+		domEvents: true	*/
+	});
+};

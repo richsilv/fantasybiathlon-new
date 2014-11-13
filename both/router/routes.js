@@ -28,6 +28,13 @@ Router.onBeforeAction(function() {
 
 }, {only: ['admin']});
 
+Router.onAfterAction(function() {
+	if (App && App.thisPage.get() !== this.route.getName()) {
+		App.previousPage.set(App.thisPage.get());
+		App.thisPage.set(this.route.getName());
+	}
+})
+
 /*
  *  Example:
  *  Router.route('/', {name: 'home'});
@@ -35,3 +42,7 @@ Router.onBeforeAction(function() {
 Router.route('/login', {name: 'login'});
 Router.route('/admin', {name: 'admin'});
 Router.route('/', {name: 'root'});
+Router.route('/team', {name: 'team'});
+Router.route('/leagues', {name: 'leagues'});
+Router.route('/calendar', {name: 'calendar'});
+Router.route('/settings', {name: 'settings'});

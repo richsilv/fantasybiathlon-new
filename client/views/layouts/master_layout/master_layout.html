@@ -1,4 +1,5 @@
 <template name="MasterLayout">
-<div class="uk-margin"></div>
-  {{> yield}}
+	{{#momentum plugin='iron-router' options=transition}}
+	  	{{> yield}}
+	{{/momentum}}
 </template>

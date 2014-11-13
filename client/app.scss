@@ -1,7 +1,95 @@
 /*****************************************************************************/
 /* Global CSS Styles */
 /*****************************************************************************/
+@import url(http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700&subset=latin,latin-ext);
+@import url(http://fonts.googleapis.com/css?family=Orbitron:400,900,700);
+
+$color-dark-1: #08335b;
+$color-dark-2: #24052c;
+$color-dark-3: #695a61;
+$color-light-1: #b7ba93;
+$color-light-2: #9dcaeb;
+
+$base-body-background: $color-dark-3;
+$base-body-color: rgba(255, 255, 255, 0.30);
+$base-link-color: transparentize($color-dark-2, 0.5);
+$base-link-hover-color: transparentize($color-dark-2, 0.25);
+$base-link-hover-text-decoration: none;
+$base-em-color: transparentize($color-dark-1, 0.5);
+$base-body-font-family: 'PT Sans Narrow', sans-serif;
+$base-body-font-weight:                          normal !default;
+$base-body-font-size:                            14px !default;
+$base-body-line-height:                          20px !default;
+$base-margin-vertical:                           15px !default;
+$base-heading-font-family: 'Orbitron', sans-serif;
+$base-heading-font-weight:                       700 !default;
+$base-heading-color:                             rgba(255, 255, 255, 0.30);
+$base-heading-text-transform:                    none !default;
+$base-heading-margin-top:                        25px !default;
+
+html, body, [data-momentum] {
+	height: 100%;
+	overflow: hidden;
+}
+
 @import "../.meteor/local/build/programs/server/assets/packages/richsilv_uikit-sass/assets/scss/_uikit.scss";
+
+// CUSTOM ELEMENTS
+
+.light-background, .light-background * {
+	color: rgba(0, 0, 0, 0.40);
+}
+
+.dark-1 {
+	background-color: $color-dark-1;
+}
+
+.dark-2 {
+	background-color: $color-dark-2;
+}
+
+.dark-3 {
+	background-color: $color-dark-3;
+}
+
+.light-1 {
+	@extend .light-background;
+	background-color: $color-light-1;
+}
+
+.light-2 {
+	@extend .light-background;
+	background-color: $color-light-2;
+}
+
+.nav-panel {
+	box-sizing: border-box;
+	width: 100%;
+	padding: 10px;
+	position: relative;
+	overflow-y: hidden;
+
+	&.nav-panel-arrow > * {
+		max-width: 90%;
+	}
+
+	&.nav-panel-arrow:after {
+		font-family: FontAwesome;
+		content: '\f101';
+		font-size: 4em;
+		position: absolute;
+		right: 10px;
+		transform: translate(0, -50%);
+		top: 50%;
+	}
+}
+
+.height-1-4 {
+	height: 25% !important;
+	max-height: 25% !important;
+}
+
+// FLEXBOX SETTINGS
 
 .uk-flex {
 	flex-wrap: wrap;

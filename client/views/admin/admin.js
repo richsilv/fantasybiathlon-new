@@ -121,7 +121,7 @@ Template.athleteSettings.events({
   },
   'change [data-field="value"]': function(event, template) {
     var value = template.$(event.currentTarget).val();
-    Athletes.update({_id: this._id}, {$set: {value: value}});
+    Athletes.update({_id: this._id}, {$set: {value: parseFloat(value, 10)}});
   },
   'submit .uk-form': function(event, template) {
     event.preventDefault();
