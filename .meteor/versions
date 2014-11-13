@@ -66,7 +66,7 @@ oauth2@1.1.1
 oauth@1.1.2
 observe-sequence@1.0.3
 ordered-dict@1.0.1
-percolate:momentum-iron-router@0.7.1
+percolate:momentum-iron-router@0.7.0
 percolate:momentum@0.6.1
 percolate:velocityjs@1.0.0
 percolatestudio:synced-cron@1.0.0
