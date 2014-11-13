@@ -32,7 +32,7 @@ App.helpers = {
 		return App.dps(num, dp);
 	},
 	toPercent: function(num, marginPct) {
-		return (99 - (2 * marginPct * num)) / num;
+		return (99 - (2 * marginPct * (num + 1))) / num;
 	}
 };
 

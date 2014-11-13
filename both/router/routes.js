@@ -46,3 +46,4 @@ Router.route('/team', {name: 'team'});
 Router.route('/leagues', {name: 'leagues'});
 Router.route('/calendar', {name: 'calendar'});
 Router.route('/settings', {name: 'settings'});
+Router.route('/change_athlete/:IBUId', {name: 'change.athlete'});

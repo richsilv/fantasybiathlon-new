@@ -13,6 +13,20 @@ Template.Team.events({
 Template.Team.helpers({
   tempAthletes: function() {
     return Athletes.find({}, {limit: 4, skip: Math.floor(Math.random() * 400)});
+  },
+
+  changeAthlete: function() {
+    return Router.current().state.get('changeAthlete');
+  },
+
+  heightString: function() {
+    var changeAthlete = Router.current().state.get('changeAthlete');
+    return changeAthlete ? '1-3' : '2-3';
+  },
+
+  grid: function() {
+    var changeAthlete = Router.current().state.get('changeAthlete');
+    return changeAthlete ? {rows: 1, cols: 4} : {rows: 2, cols: 2};    
   }
 });
 

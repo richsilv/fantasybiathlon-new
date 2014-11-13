@@ -45,7 +45,7 @@
 </template>
 
 <template name="httpData">
-	<div class="uk-panel uk-panel-box uk-margin-top">
+	<div class="uk-panel uk-panel-box uk-margin-top dark-3">
 		<div class="uk-flex uk-flex-start">
 			{{> statObject methodData 'memStats'}}
 			{{> statObject methodData 'queueStats'}}
@@ -57,7 +57,7 @@
 
 <template name="statObject">
 	{{#each keyVal this}}
-	<div class="uk-flex-item {{#if equals this.key 'key'}}uk-margin-large-left{{/if}}">
+	<div class="uk-flex-item {{#if equals this.key 'key'}}uk-margin-large-left{{/if}} dark-1">
 		<h4>{{key}}: </h4>
 		<h3>{{numberWithCommas val}} </h3>
 	</div>

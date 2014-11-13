@@ -32,6 +32,16 @@ html, body, [data-momentum] {
 	overflow: hidden;
 }
 
+html body input[type], html body .uk-form input[type] {
+	background-color: $color-light-1;
+	border: 1px solid rgba(0, 0, 0, 0.25);
+	color: rgba(0, 0, 0, 0.6);
+
+	&::selection {
+		background-color: $color-light-2;
+	}
+}
+
 @import "../.meteor/local/build/programs/server/assets/packages/richsilv_uikit-sass/assets/scss/_uikit.scss";
 
 // CUSTOM ELEMENTS
@@ -76,6 +86,7 @@ html, body, [data-momentum] {
 	padding: 10px;
 	position: relative;
 	overflow-y: hidden;
+	transition: height 0.5s;
 
 	&.nav-panel-arrow > * {
 		max-width: 90%;
@@ -92,6 +103,11 @@ html, body, [data-momentum] {
 	}
 }
 
+.nav-panel.collapse {
+	height: 0 !important;
+	padding: 0 !important;
+}
+
 .height-1-4 {
 	height: 25% !important;
 	max-height: 25% !important;
@@ -100,6 +116,26 @@ html, body, [data-momentum] {
 .height-3-4 {
 	height: 75% !important;
 	max-height: 75% !important;	
+}
+
+.height-1-5 {
+	height: 20% !important;
+	max-height: 20% !important;	
+}
+
+.height-2-5 {
+	height: 40% !important;
+	max-height: 40% !important;	
+}
+
+.height-3-5 {
+	height: 60% !important;
+	max-height: 60% !important;	
+}
+
+.height-4-5 {
+	height: 80% !important;
+	max-height: 80% !important;	
 }
 
 .height-1-2 {
@@ -128,9 +164,9 @@ html, body, [data-momentum] {
 }
 
 .athlete {
-	margin: 0.25em;	
 	position: relative;
 	display: inline-block;
+	transition: height 0.5s, width 0.5s;
 
 	.athlete-background {
 		position: absolute;
@@ -154,10 +190,10 @@ html, body, [data-momentum] {
 
 .show-row {
 	text-align:	center;
-	padding-top: 0.35em;
-	padding-bottom: 0.35em;
+	padding: 0.35em;
 
 	> span {
+		line-height: 1.5em !important;
 		padding: 0.25em;
 		background-color: rgba(255, 255, 255, 0.50);
 		color: rgba(0, 0, 0, 0.8);
