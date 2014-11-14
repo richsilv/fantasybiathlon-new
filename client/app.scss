@@ -165,6 +165,26 @@ html body input[type], html body .uk-form input[type] {
 	max-height: 83% !important;
 }
 
+.height-1-12 {
+	height: 8.5% !important;
+	max-height: 8.5% !important;	
+}
+
+.height-5-12 {
+	height: 41.5% !important;
+	max-height: 41.5% !important;	
+}
+
+.height-7-12 {
+	height: 58.5% !important;
+	max-height: 58.5% !important;	
+}
+
+.height-11-12 {
+	height: 91.5% !important;
+	max-height: 91.5% !important;	
+}
+
 .large-text {
 	font-size: 1.3em;
 }
@@ -173,14 +193,21 @@ html body input[type], html body .uk-form input[type] {
 	font-size: 0.8em;
 }
 
+.athlete-panel {
+	z-index: 1;
+	overflow: visible;
+}
+
 .athlete {
 	position: relative;
 	display: inline-block;
+	overflow: hidden;
 	float: left;
 	transition: height 0.5s, width 0.5s;
 	font-size: 1em;
 
 	.athlete-background {
+		@include filter(brightness(90%) contrast(75%) blur(1px));
 		position: absolute;
 		background-size: cover, cover;
 		background-repeat: no-repeat;
@@ -212,6 +239,7 @@ html body input[type], html body .uk-form input[type] {
 	display: inline-block;
 	box-sizing: border-box;
 	float: left;
+	clear: none;
 	width: 23%;
 	height: 6em;
 	padding: 0.5em;
@@ -231,13 +259,15 @@ html body input[type], html body .uk-form input[type] {
 
 .show-row {
 	text-align:	center;
-	padding: 0.35em;
+	padding: 2%;
 
 	> span {
 		line-height: 1.5em !important;
 		padding: 0.25em;
 		background-color: rgba(255, 255, 255, 0.50);
 		color: rgba(0, 0, 0, 0.8);
+		max-width: 100%;
+		word-wrap: break-word;
 
 		.bright {
 			color: rgba(0, 0, 0, 0.8);
@@ -264,3 +294,59 @@ html body input[type], html body .uk-form input[type] {
 	margin: 0.5rem;
 	border: 1px solid rgba(0, 0, 0, 0.1);
 }
+
+// MY OVERLAY
+
+.overlay {
+    display: inline-block;
+    position: relative;
+    max-width: 100%;
+    vertical-align: middle;
+    overflow: hidden;
+}
+
+.overlay > :first-child { margin-bottom: 0; }
+
+.overlay-area {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    -webkit-transition: opacity 0.15s linear;
+    transition: opacity 0.15s linear;
+    -webkit-transform: translate3d(0,0,0);
+    @include hook-overlay-area();
+
+    &.visible {
+    	opacity: 1;
+    }
+}
+
+// .overlay-area:not(:empty) { font-size: 0.001px; }
+
+.overlay-area:not(:empty):before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.overlay-area-content {
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    @include transform(translateY(-50%));
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    vertical-align: middle;
+    font-size: 4em;
+    text-align: center;
+    color: #fff;
+    @include hook-overlay-area-content();
+}
+
+.overlay-area-content > :last-child { margin-bottom: 0; }

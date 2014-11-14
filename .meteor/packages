@@ -26,6 +26,9 @@ fastclick
 percolate:momentum
 richsilv:uikit-sass
 percolate:momentum-iron-router
-richsilv:hammer
 wolves:bourbon
+linto:jquery-ui
+dsyko:jquery-ui-touch-punch
+richsilv:hammer
+reactive-dict
 

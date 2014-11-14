@@ -50,8 +50,5 @@ $(document).on("keydown", function (e) {
 });
 
 UI.body.rendered = function() {
-	$('body').hammer({
-/*		touchAction: 'pan-y',
-		domEvents: true	*/
-	});
+	// $('body').hammer();
 };

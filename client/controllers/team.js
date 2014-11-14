@@ -11,7 +11,9 @@ TeamController = RouteController.extend({
   },
 
   action: function () {
-    this.state.set('changeAthlete'. false);
     this.render();
+  },
+
+  onStop: function() {
   }
 });

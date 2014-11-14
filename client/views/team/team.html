@@ -4,6 +4,7 @@
   	<h3 class="uk-margin-small-top uk-margin-small-bottom">Nation: </h3><h1 class="bright uk-margin-small-top uk-text-right">Nation{{NAT}}</h1>
   </div>
   {{> athleteBlock athletes=tempAthletes details=athleteBlockDetails}}
+  {{> teamDetails}}
   {{> athleteTabs athletes=allAthletes details=athleteTabsDetails}}
 </template>
 
@@ -16,7 +17,7 @@
 </template>
 
 <template name="athleteTabs">
-  <div class="nav-panel athlete-tab-panel {{color}} height-{{heightString}} {{extraClasses}}">
+  <div class="nav-panel athlete-tab-panel {{details.color}} height-{{details.heightString}} {{details.extraClasses}}">
     <div>
       {{#each athletes}}
         {{> athleteTab}}
@@ -42,5 +43,15 @@
   <div class="athlete-tab {{GenderId}}-tab">
     <div class="uk-text-bold">{{FamilyName}}, {{abbreviate GivenName}}</div>
     <div class="uk-text-bold">{{NAT}} - {{value}} points</div>
+  </div>
+</template>
+
+<template name="teamDetails">
+  <div class="nav-panel height-1-6 dark-2 overlay">
+      <h4>Total Value: </h4>
+      <h4>Male / Female: 2 / 2</h4>
+      <div class="overlay-area {{#if dragging}}visible{{/if}}">
+          <div class="overlay-area-content"><i class="uk-icon-trash"></i></div>
+      </div>
   </div>
 </template>

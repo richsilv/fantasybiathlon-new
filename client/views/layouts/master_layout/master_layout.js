@@ -3,8 +3,7 @@
 /*****************************************************************************/
 Template.MasterLayout.events({
     'swipeRight': function(e) {
-        var previousPage = App.previousPage.get();
-        previousPage && Router.go(previousPage);
+        history.back();
     }
 });
 

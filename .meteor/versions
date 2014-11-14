@@ -20,6 +20,7 @@ ctl-helper@1.0.4
 ctl@1.0.2
 ddp@1.0.11
 deps@1.0.5
+dsyko:jquery-ui-touch-punch@1.2.4
 ejson@1.0.4
 facebook@1.1.2
 fastclick@1.0.1
@@ -45,6 +46,7 @@ jparker:gravatar@0.3.0
 jquery@1.0.1
 json@1.0.1
 launch-screen@1.0.0
+linto:jquery-ui@1.11.2
 livedata@1.0.11
 localstorage@1.0.1
 logging@1.0.5
@@ -93,4 +95,4 @@ underscore@1.0.1
 url@1.0.2
 webapp-hashing@1.0.1
 webapp@1.1.4
-wolves:bourbon@0.7.1
+wolves:bourbon@0.7.0
