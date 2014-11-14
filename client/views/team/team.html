@@ -3,25 +3,44 @@
   	<h3 class="uk-margin-small-bottom">Name: </h3><h1 class="bright uk-margin-small-top uk-text-right">TeamName{{Name}}</h1>
   	<h3 class="uk-margin-small-top uk-margin-small-bottom">Nation: </h3><h1 class="bright uk-margin-small-top uk-text-right">Nation{{NAT}}</h1>
   </div>
-  {{> athleteBlock athletes=tempAthletes heightString=heightString grid=grid marginPct=0.5}}
+  {{> athleteBlock athletes=tempAthletes details=athleteBlockDetails}}
+  {{> athleteTabs athletes=allAthletes details=athleteTabsDetails}}
 </template>
 
 <template name="athleteBlock">
-  <div class="nav-panel athlete-panel light-1 height-{{heightString}}" style="padding: {{marginPct}}%;">
+  <div class="nav-panel athlete-panel {{details.color}} height-{{details.heightString}} {{details.extraClasses}}" style="padding: {{details.marginPct}}%;">
   	{{#each athletes}}
   		{{> athlete}}
   	{{/each}}
   </div>
 </template>
 
+<template name="athleteTabs">
+  <div class="nav-panel athlete-tab-panel {{color}} height-{{heightString}} {{extraClasses}}">
+    <div>
+      {{#each athletes}}
+        {{> athleteTab}}
+      {{/each}}
+      <div class="uk-clearfix"></div>
+    </div>
+  </div>
+</template>
+
 <template name="athlete">
-	<div class="athlete" style="height: {{toPercent ../grid.rows ../marginPct}}%; width: {{toPercent ../grid.cols ../marginPct}}%; margin: {{../marginPct}}%;">
+	<div class="athlete" style="height: {{toPercent ../details.rows ../details.marginPct}}%; width: {{toPercent ../details.cols ../details.marginPct}}%; margin: {{../details.marginPct}}%;">
 		<div class="athlete-background" style="background-image: {{athleteBackground this}};">
 		</div>
 		<div class="athlete-data">
-			<div class="show-row"><span><span class="uk-text-bold uk-text-large bright">{{FamilyName}}, {{GivenName}}</span></span></div>
-			<div class="show-row"><span>Value: <span class="uk-text-bold uk-text-large bright">{{value}}</span></span></div>
-			<div class="show-row"><span>Points: <span class="uk-text-bold uk-text-large bright">{{points}}</span></span></div>		
+			<div class="show-row"><span><span class="uk-text-bold large-text bright">{{FamilyName}}, {{GivenName}}</span></span></div>
+			<div class="show-row"><span>Value: <span class="uk-text-bold large-text bright">{{value}}</span></span></div>
+			<div class="show-row"><span>Points: <span class="uk-text-bold large-text bright">{{points}}</span></span></div>		
 		</div>
 	</div>
+</template>
+
+<template name="athleteTab">
+  <div class="athlete-tab {{GenderId}}-tab">
+    <div class="uk-text-bold">{{FamilyName}}, {{abbreviate GivenName}}</div>
+    <div class="uk-text-bold">{{NAT}} - {{value}} points</div>
+  </div>
 </template>

@@ -12,7 +12,7 @@ ChangeAthleteController = RouteController.extend({
   		this.redirect('team');
   	else
   		this.next();
-  }
+  },
 
   action: function () {
     this.render();

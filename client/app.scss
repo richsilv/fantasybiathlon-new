@@ -4,6 +4,8 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700);
 @import url(http://fonts.googleapis.com/css?family=Orbitron:400,900,700);
 
+@import ".meteor/local/build/programs/server/assets/packages/wolves_bourbon/bourbon";
+
 $color-dark-1: #08335b;
 $color-dark-2: #24052c;
 $color-dark-3: #695a61;
@@ -42,7 +44,7 @@ html body input[type], html body .uk-form input[type] {
 	}
 }
 
-@import "../.meteor/local/build/programs/server/assets/packages/richsilv_uikit-sass/assets/scss/_uikit.scss";
+@import ".meteor/local/build/programs/server/assets/packages/richsilv_uikit-sass/assets/scss/_uikit.scss";
 
 // CUSTOM ELEMENTS
 
@@ -98,7 +100,7 @@ html body input[type], html body .uk-form input[type] {
 		font-size: 4em;
 		position: absolute;
 		right: 10px;
-		transform: translate(0, -50%);
+		@include transform(translateY(-50%));
 		top: 50%;
 	}
 }
@@ -163,10 +165,20 @@ html body input[type], html body .uk-form input[type] {
 	max-height: 83% !important;
 }
 
+.large-text {
+	font-size: 1.3em;
+}
+
+.small-text {
+	font-size: 0.8em;
+}
+
 .athlete {
 	position: relative;
 	display: inline-block;
+	float: left;
 	transition: height 0.5s, width 0.5s;
+	font-size: 1em;
 
 	.athlete-background {
 		position: absolute;
@@ -183,7 +195,36 @@ html body input[type], html body .uk-form input[type] {
 		position: absolute;
 		width: 100%;
 		top: 50%;
-		transform: translate(0, -50%);
+		@include transform(translateY(-50%));
+	}
+
+}
+
+.athlete-tab-panel {
+
+	overflow-y: scroll;
+
+}
+
+.athlete-tab {
+
+	font-size: 0.6em;
+	display: inline-block;
+	box-sizing: border-box;
+	float: left;
+	width: 23%;
+	height: 6em;
+	padding: 0.5em;
+	margin: 1%;
+	border-radius: 0.25em;
+
+	&.M-tab {
+		@extend .light-background;
+		background-color: lightblue;
+	}
+	&.W-tab {
+		@extend .light-background;
+		background-color: pink;
 	}
 
 }

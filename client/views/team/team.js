@@ -12,21 +12,36 @@ Template.Team.events({
 
 Template.Team.helpers({
   tempAthletes: function() {
-    return Athletes.find({}, {limit: 4, skip: Math.floor(Math.random() * 400)});
+    return Athletes.find({}, {limit: 4, skip: Math.floor(Math.random() * 300)});
+  },
+
+  allAthletes: function() {
+    return Athletes.find({});
   },
 
   changeAthlete: function() {
     return Router.current().state.get('changeAthlete');
   },
 
-  heightString: function() {
+  athleteBlockDetails: function() {
     var changeAthlete = Router.current().state.get('changeAthlete');
-    return changeAthlete ? '1-3' : '2-3';
+    return {
+      heightString: changeAthlete ? '1-4' : '2-3',
+      rows: changeAthlete ? 1 : 2,
+      cols: changeAthlete ? 4 : 2,
+      marginPct: 1,
+      color: 'light-1',
+      extraClasses: changeAthlete ? 'small-text' : ''
+    }
   },
 
-  grid: function() {
+  athleteTabsDetails: function() {
     var changeAthlete = Router.current().state.get('changeAthlete');
-    return changeAthlete ? {rows: 1, cols: 4} : {rows: 2, cols: 2};    
+    return {
+      height: '3-4',
+      color: 'dark-1',
+      extraClasses: changeAthlete ? '' : 'collapse'
+    }
   }
 });
 

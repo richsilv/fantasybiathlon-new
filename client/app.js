@@ -32,7 +32,10 @@ App.helpers = {
 		return App.dps(num, dp);
 	},
 	toPercent: function(num, marginPct) {
-		return (99 - (2 * marginPct * (num + 1))) / num;
+		return (100 - (2 * marginPct * (num + 1))) / num;
+	},
+	abbreviate: function(name) {
+		return name.match(/[A-Z]/g).join(' ');
 	}
 };
 
