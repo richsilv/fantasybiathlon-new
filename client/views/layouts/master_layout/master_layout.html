@@ -3,3 +3,28 @@
 	  	{{> yield}}
 	{{/momentum}}
 </template>
+
+<template name="confirmModalWrapper">
+	<div class="uk-modal">
+		{{> confirmModal}}
+	</div>
+</template>
+
+<template name="confirmModal">
+    <div class="uk-modal-dialog light-1">
+        <a class="uk-modal-close uk-close"></a>
+        <h2>{{header}}</h2>
+    	{{{content}}}
+    	{{#unless noButtons}}
+	        <button type="button" class="uk-button dark-1 uk-margin-left uk-float-right" data-action="cancel">Cancel</button>
+	        <button type="button" class="uk-button dark-3 uk-float-right" data-action="confirm">Confirm</button>
+	        <div class="uk-clearfix"></div>
+        {{/unless}}
+    </div>
+</template>
+
+<template name="generalModalWrapper">
+	<div class="uk-modal">
+	{{> Template.dynamic template=template data=data}}
+	</div>
+</template>

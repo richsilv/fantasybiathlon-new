@@ -27,13 +27,6 @@ Router.onBeforeAction(function() {
 
 }, {only: ['admin']});
 
-Router.onAfterAction(function() {
-	if (App && App.thisPage.get() !== this.route.getName()) {
-		App.previousPage.set(App.thisPage.get());
-		App.thisPage.set(this.route.getName());
-	}
-})
-
 /*
  *  Example:
  *  Router.route('/', {name: 'home'});

@@ -44,6 +44,10 @@ html body input[type], html body .uk-form input[type] {
 	}
 }
 
+// MODAL SETTINGS
+
+
+
 @import ".meteor/local/build/programs/server/assets/packages/richsilv_uikit-sass/assets/scss/_uikit.scss";
 
 // CUSTOM ELEMENTS
@@ -193,7 +197,22 @@ html body input[type], html body .uk-form input[type] {
 	font-size: 0.8em;
 }
 
-.athlete-panel {
+.clear-left {
+	clear: left;
+}
+
+.clear-right {
+	clear: right;
+}
+
+.heading-block {
+	h1, h2, h3, h4, h5, h6 {
+		margin-top: 0.5em;
+		margin-bottom: 0.75em;
+	}
+}
+
+body .athlete-panel {
 	z-index: 1;
 	overflow: visible;
 }
@@ -215,7 +234,7 @@ html body input[type], html body .uk-form input[type] {
 		height: 100%;
 		width: 100%;
 		box-size: border-box;
-		z-index: -1;
+		z-index: 0;
 	}
 
 	.athlete-data {
@@ -245,6 +264,7 @@ html body input[type], html body .uk-form input[type] {
 	padding: 0.5em;
 	margin: 1%;
 	border-radius: 0.25em;
+	z-index: 5;
 
 	&.M-tab {
 		@extend .light-background;
@@ -253,6 +273,10 @@ html body input[type], html body .uk-form input[type] {
 	&.W-tab {
 		@extend .light-background;
 		background-color: pink;
+	}
+
+	&.disabled {
+		background-color: grey !important;
 	}
 
 }
@@ -305,14 +329,13 @@ html body input[type], html body .uk-form input[type] {
     overflow: hidden;
 }
 
-.overlay > :first-child { margin-bottom: 0; }
-
 .overlay-area {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: -1;
     background: rgba(0,0,0,0.5);
     opacity: 0;
     -webkit-transition: opacity 0.15s linear;
@@ -322,10 +345,9 @@ html body input[type], html body .uk-form input[type] {
 
     &.visible {
     	opacity: 1;
+    	z-index: 1;
     }
 }
-
-// .overlay-area:not(:empty) { font-size: 0.001px; }
 
 .overlay-area:not(:empty):before {
     content: '';

@@ -3,10 +3,12 @@
 /*****************************************************************************/
 _.extend(App, {
 	dps: function(num, dp) {
-		return ~~(num * Math.pow(10, dp))/Math.pow(10, dp);		
+		return ~~(num * Math.pow(10, dp)) / Math.pow(10, dp);
 	},
-	thisPage: new ReactiveVar('root'),
-	previousPage: new ReactiveVar(null)
+	state: new ReactiveDict({
+		dragging: '0',
+		dragOverlay: '0'
+	})
 });
 
 App.helpers = {
@@ -23,7 +25,7 @@ App.helpers = {
 		}, []);
 	},
 	numberWithCommas: function(x) {
-    	return x ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0;
+		return x ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0;
 	},
 	equals: function(x, y) {
 		return x === y;
@@ -39,16 +41,69 @@ App.helpers = {
 	}
 };
 
-_.each(App.helpers, function (helper, key) {
-  Handlebars.registerHelper(key, helper);
+_.each(App.helpers, function(helper, key) {
+	Handlebars.registerHelper(key, helper);
 });
 
-$(document).on("keydown", function (e) {
-    if (e.which === 8 && !$(e.target).is("input, textarea")) {
-        e.preventDefault();
+$(document).on("keydown", function(e) {
+	if (e.which === 8 && !$(e.target).is("input, textarea")) {
+		e.preventDefault();
+	}
+});
+
+Template.body.rendered = function() {
+	$('body').hammer();
+};
+
+App.templateAttach = function(template, callback, data) {
+  var instance;
+  if (typeof template === "string") template = Template[template];
+  if (!template) return false;
+  if (data)
+    instance = Blaze.renderWithData(template, data, document.body);
+  else
+    instance = Blaze.render(template, document.body);
+  return callback && callback.call(this, instance);
+};
+
+App.confirmModal = function(options, postRender) {
+  App.templateAttach(
+    Template.confirmModalWrapper, 
+    function(instance) {
+      var modal = $.UIkit.modal(".uk-modal");
+      modal.on({
+        'uk.modal.hide': function() {
+          $('.uk-modal').remove();
+        }
+      });
+      modal.show();
+      postRender && postRender.call(instance, options);
+    },
+    _.extend({
+      content: '',
+      header: '',
+      callback: null,
+      noButtons: false
+    }, options)
+  );
+};
+
+App.generalModal = function(template, data, postRender) {
+  App.templateAttach(
+    Template.generalModalWrapper, 
+    function(instance) {
+      var modal = $.UIkit.modal(".uk-modal");
+      modal.on({
+        'uk.modal.hide': function() {
+          $('.uk-modal').remove();
+        }
+      });
+      modal.show();
+      postRender && postRender.call(instance, options);
+    },
+    {
+      template: template,
+      data: data
     }
-});
-
-UI.body.rendered = function() {
-	// $('body').hammer();
+  );
 };

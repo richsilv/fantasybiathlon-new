@@ -4,3 +4,5 @@ CollectionFunctions = {
 		return user && user.profile.admin;
 	}
 }
+
+Schemas = {};

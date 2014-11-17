@@ -3,7 +3,7 @@
   	<h3 class="uk-margin-small-bottom">Name: </h3><h1 class="bright uk-margin-small-top uk-text-right">TeamName{{Name}}</h1>
   	<h3 class="uk-margin-small-top uk-margin-small-bottom">Nation: </h3><h1 class="bright uk-margin-small-top uk-text-right">Nation{{NAT}}</h1>
   </div>
-  {{> athleteBlock athletes=tempAthletes details=athleteBlockDetails}}
+  {{> athleteBlock athletes=myAthletes details=athleteBlockDetails overlay=true}}
   {{> teamDetails}}
   {{> athleteTabs athletes=allAthletes details=athleteTabsDetails}}
 </template>
@@ -13,6 +13,10 @@
   	{{#each athletes}}
   		{{> athlete}}
   	{{/each}}
+    {{#if overlay}}
+    <div class="overlay-area {{#if dragOverlay}}visible{{/if}}">
+    </div>
+    {{/if}}
   </div>
 </template>
 
@@ -29,28 +33,30 @@
 
 <template name="athlete">
 	<div class="athlete" style="height: {{toPercent ../details.rows ../details.marginPct}}%; width: {{toPercent ../details.cols ../details.marginPct}}%; margin: {{../details.marginPct}}%;">
-		<div class="athlete-background" style="background-image: {{athleteBackground this}};">
-		</div>
-		<div class="athlete-data">
-			<div class="show-row"><span><span class="uk-text-bold large-text bright">{{FamilyName}}, {{GivenName}}</span></span></div>
-			<div class="show-row"><span>Value: <span class="uk-text-bold large-text bright">{{value}}</span></span></div>
-			<div class="show-row"><span>Points: <span class="uk-text-bold large-text bright">{{points}}</span></span></div>		
-		</div>
-	</div>
+  		<div class="athlete-background" style="background-image: {{athleteBackground this}};">
+  		</div>
+  {{#if IBUId}}
+  		<div class="athlete-data">
+  			<div class="show-row"><span><span class="uk-text-bold large-text bright">{{FamilyName}}, {{GivenName}}</span></span></div>
+  			<div class="show-row"><span>Value: <span class="uk-text-bold large-text bright">{{value}}</span></span></div>
+  			<div class="show-row"><span>Points: <span class="uk-text-bold large-text bright">{{points}}</span></span></div>		
+  		</div>
+  {{/if}}
+  	</div>
 </template>
 
 <template name="athleteTab">
-  <div class="athlete-tab {{GenderId}}-tab">
+  <div class="athlete-tab {{GenderId}}-tab {{#unless eligible}}disabled{{/unless}}">
     <div class="uk-text-bold">{{FamilyName}}, {{abbreviate GivenName}}</div>
     <div class="uk-text-bold">{{NAT}} - {{value}} points</div>
   </div>
 </template>
 
 <template name="teamDetails">
-  <div class="nav-panel height-1-6 dark-2 overlay">
-      <h4>Total Value: </h4>
-      <h4>Male / Female: 2 / 2</h4>
-      <div class="overlay-area {{#if dragging}}visible{{/if}}">
+  <div class="nav-panel height-1-6 dark-2 overlay heading-block">
+      <h4 class="uk-float-left">Value: </h4><h4 class="uk-float-right">Transfers: 1</h4>
+      <h4 class="uk-float-left clear-left">M / F: 2 / 2</h4><h4 class="uk-float-right clear-right">Save</h4>
+      <div class="overlay-area {{#if dragOverlay}}visible{{/if}}">
           <div class="overlay-area-content"><i class="uk-icon-trash"></i></div>
       </div>
   </div>
