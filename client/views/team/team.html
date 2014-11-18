@@ -3,13 +3,13 @@
   	<h3 class="uk-margin-small-bottom">Name: </h3><h1 class="bright uk-margin-small-top uk-text-right">TeamName{{Name}}</h1>
   	<h3 class="uk-margin-small-top uk-margin-small-bottom">Nation: </h3><h1 class="bright uk-margin-small-top uk-text-right">Nation{{NAT}}</h1>
   </div>
+  {{> teamDetails collapse=collapse}}
   {{> athleteBlock athletes=myAthletes details=athleteBlockDetails overlay=true}}
-  {{> teamDetails}}
   {{> athleteTabs athletes=allAthletes details=athleteTabsDetails}}
 </template>
 
 <template name="athleteBlock">
-  <div class="nav-panel athlete-panel {{details.color}} height-{{details.heightString}} {{details.extraClasses}}" style="padding: {{details.marginPct}}%;">
+  <div class="nav-panel athlete-panel {{details.color}} height-{{details.heightString}} {{details.extraClasses}}" style="padding: {{details.marginPct}}%; {{details.extraStyles}}">
   	{{#each athletes}}
   		{{> athlete}}
   	{{/each}}
@@ -21,7 +21,7 @@
 </template>
 
 <template name="athleteTabs">
-  <div class="nav-panel athlete-tab-panel {{details.color}} height-{{details.heightString}} {{details.extraClasses}}">
+  <div class="nav-panel athlete-tab-panel {{details.color}} height-{{details.heightString}} {{details.extraClasses}}" style="{{details.extraStyles}}">
     <div>
       {{#each athletes}}
         {{> athleteTab}}
@@ -47,17 +47,20 @@
 
 <template name="athleteTab">
   <div class="athlete-tab {{GenderId}}-tab {{#unless eligible}}disabled{{/unless}}">
-    <div class="uk-text-bold">{{FamilyName}}, {{abbreviate GivenName}}</div>
-    <div class="uk-text-bold">{{NAT}} - {{value}} points</div>
+    <div class="athlete-tab-background" style="background-image: url('images/{{NAT}}.png')"></div>
+    <div class="athlete-tab-contents">
+      <div class="uk-text-bold">{{FamilyName}}, {{abbreviate GivenName}}</div>
+      <div class="uk-text-bold">{{NAT}} - {{value}} points</div>
+    </div>
   </div>
 </template>
 
 <template name="teamDetails">
-  <div class="nav-panel height-1-6 dark-2 overlay heading-block">
-      <h4 class="uk-float-left">Value: </h4><h4 class="uk-float-right">Transfers: 1</h4>
-      <h4 class="uk-float-left clear-left">M / F: 2 / 2</h4><h4 class="uk-float-right clear-right">Save</h4>
+  <div class="nav-panel height-1-6 dark-2 overlay heading-block {{collapse}}">
+      <h4 class="uk-float-left">Value: {{value}} / {{MAX_VALUE}}</h4><h4 class="uk-float-right">Transfers: {{transfers}}</h4>
+      <h4 class="uk-float-left clear-left">M / W: {{toNum eligibility.genders.M}} / {{toNum eligibility.genders.W}}</h4><h4 class="uk-float-right clear-right">Save</h4>
       <div class="overlay-area {{#if dragOverlay}}visible{{/if}}">
-          <div class="overlay-area-content"><i class="uk-icon-trash"></i></div>
+          <div class="overlay-area-content" data-action="remove-athlete"><i class="uk-icon-trash"></i></div>
       </div>
   </div>
 </template>

@@ -3,7 +3,7 @@
 /*****************************************************************************/
 Template.MasterLayout.events({
     'swipeRight': function(e) {
-    	if (!App.state.get('dragging'))
+    	if (!AppState.get('dragging'))
 	        history.back();
     }
 });
@@ -29,9 +29,9 @@ Template.MasterLayout.destroyed = function() {};
 
 Template.MasterLayout.events({
 	'dragstart .ui-draggable-handle': function() {
-		App.state.set('dragging', 1);
+		AppState.set('dragging', 1);
 	},
 	'dragstop .ui-draggable-handle': function() {
-		App.state.set('dragging', 1);
+		AppState.set('dragging', 1);
 	}
 });

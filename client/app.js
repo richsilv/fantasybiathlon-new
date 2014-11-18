@@ -4,11 +4,7 @@
 _.extend(App, {
 	dps: function(num, dp) {
 		return ~~(num * Math.pow(10, dp)) / Math.pow(10, dp);
-	},
-	state: new ReactiveDict({
-		dragging: '0',
-		dragOverlay: '0'
-	})
+	}
 });
 
 App.helpers = {
@@ -36,6 +32,9 @@ App.helpers = {
 	toPercent: function(num, marginPct) {
 		return (100 - (2 * marginPct * (num + 1))) / num;
 	},
+  toNum: function(num) {
+    return parseInt(num, 10) || 0;
+  },
 	abbreviate: function(name) {
 		return name.match(/[A-Z]/g).join(' ');
 	}

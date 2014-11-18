@@ -6,19 +6,14 @@ TeamController = RouteController.extend({
   },
 
   data: function () {
-  	var user = Meteor.user(),
-        current = user && user.profile.team.current;
-    this.state.set('newTeam', current);
+    currentTeam = AppState.get('currentTeam');
     return {
-      current: current,
-      newTeam: this.state.get('newTeam')
+      currentTeam: currentTeam,
+      newTeam: this.state.get('newTeam') || []
     }
   },
 
   action: function () {
     this.render();
-  },
-
-  onStop: function() {
   }
 });

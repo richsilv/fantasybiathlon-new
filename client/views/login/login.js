@@ -22,11 +22,17 @@ Template.Login.helpers({
 /*****************************************************************************/
 /* Login: Lifecycle Hooks */
 /*****************************************************************************/
-Template.Login.created = function () {
-};
+Template.Login.created = function() {};
 
-Template.Login.rendered = function () {
-};
+Template.Login.rendered = function() {};
 
-Template.Login.destroyed = function () {
-};
+Template.Login.destroyed = function() {};
+
+Tracker.autorun(function(c) {
+
+  var user = Meteor.user(),
+    currentTeam = user && user.profile.team.current;
+
+  AppState.set('currentTeam', currentTeam);
+
+});

@@ -29,6 +29,28 @@ $base-heading-color:                             rgba(255, 255, 255, 0.30);
 $base-heading-text-transform:                    none !default;
 $base-heading-margin-top:                        25px !default;
 
+@mixin box-shadows($shadow1, $shadow2) {
+  -webkit-box-shadow: $shadow1, $shadow2;
+  -moz-box-shadow: $shadow1, $shadow2;
+  box-shadow: $shadow1, $shadow2;
+}
+
+@mixin text-shadows($shadow1, $shadow2) {
+    -webkit-text-shadow: $shadow1, $shadow2;
+    -moz-text-shadow: $shadow1, $shadow2;
+    -ms-text-shadow: $shadow1, $shadow2; /* IE 10+ */
+    -o-text-shadow: $shadow1, $shadow2;
+    text-shadow: $shadow1, $shadow2;
+}
+
+@mixin text-shadow($horizOffset, $vertOffset, $blur, $color) {
+    -webkit-text-shadow: $horizOffset $vertOffset $blur $color;
+    -moz-text-shadow: $horizOffset $vertOffset $blur $color;
+    -ms-text-shadow: $horizOffset $vertOffset $blur $color; /* IE 10+ */
+    -o-text-shadow: $horizOffset $vertOffset $blur $color;
+    text-shadow: $horizOffset $vertOffset $blur $color;
+}
+
 html, body, [data-momentum] {
 	height: 100%;
 	overflow: hidden;
@@ -93,6 +115,7 @@ html body input[type], html body .uk-form input[type] {
 	position: relative;
 	overflow-y: hidden;
 	transition: height 0.5s;
+	float: left;
 
 	&.nav-panel-arrow > * {
 		max-width: 90%;
@@ -213,7 +236,6 @@ html body input[type], html body .uk-form input[type] {
 }
 
 body .athlete-panel {
-	z-index: 1;
 	overflow: visible;
 }
 
@@ -224,17 +246,18 @@ body .athlete-panel {
 	float: left;
 	transition: height 0.5s, width 0.5s;
 	font-size: 1em;
+	z-index: 5;
 
 	.athlete-background {
 		@include filter(brightness(90%) contrast(75%) blur(1px));
 		position: absolute;
-		background-size: cover, cover;
+		background-size: 100% 100%, 100% 100%;
 		background-repeat: no-repeat;
 		background-position: center center;
 		height: 100%;
 		width: 100%;
 		box-size: border-box;
-		z-index: 0;
+		position: inherit;
 	}
 
 	.athlete-data {
@@ -261,22 +284,95 @@ body .athlete-panel {
 	clear: none;
 	width: 23%;
 	height: 6em;
-	padding: 0.5em;
 	margin: 1%;
 	border-radius: 0.25em;
-	z-index: 5;
+	position: relative;
+
+	.athlete-tab-background {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		background-size: 100% 100%;
+		background-position: center;
+		@include filter(brightness(60%) contrast(75%) blur(1px));		
+	}
+
+	.athlete-tab-contents {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		padding: 0.5em;
+		box-sizing: border-box;
+		// @include box-shadows(inset 15px 15px 15px rgba(0, 0, 0, 0.2), inset -15px -15px 15px rgba(255, 255, 255, 0.2));
+
+		.uk-text-bold {
+			font-size: 1.6em;
+			padding: 0.1em;
+			line-height: 1.5em;
+			color: rgba(0, 0, 0, 1);
+			@include text-shadow(0, 0, 2px, rgba(255, 255, 255, 0.5));
+		}
+	}
 
 	&.M-tab {
 		@extend .light-background;
-		background-color: lightblue;
+		.athlete-tab-contents {
+			.uk-text-bold {
+				color: lightblue;
+				@include text-shadows(0 0 1px rgba(0, 0, 50, 0.9), 0 0 3px rgba(0, 0, 50, 0.6));
+			}
+		}
 	}
 	&.W-tab {
 		@extend .light-background;
-		background-color: pink;
+		.athlete-tab-contents {
+			.uk-text-bold {
+				color: pink;
+				@include text-shadows(0 0 1px rgba(50, 0, 0, 0.9), 0 0 3px rgba(50, 0, 0, 0.6));
+			}
+		}
 	}
 
 	&.disabled {
-		background-color: grey !important;
+		.athlete-tab-background {
+		@include filter(brightness(40%) contrast(35%) blur(1px));				
+		}
+
+		.athlete-tab-contents {
+			.uk-text-bold {
+				color: rgba(44, 44, 44, 0.5);				
+			}
+		}
+	}
+
+}
+
+.athlete-tab-dummy {
+
+	font-size: 0.6em;
+	display: inline-block;
+	box-sizing: border-box;
+	float: left;
+	clear: none;
+	width: 23%;
+	height: 6em;
+	margin: 1%;
+	border-radius: 0.25em;
+	background-color: grey;
+
+	.athlete-tab-contents {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		padding: 0.5em;
+		box-sizing: border-box;
+
+		.uk-text-bold {
+			font-size: 1.6em;
+			padding: 0.1em;
+			line-height: 1.5em;
+			color: rgba(0, 0, 0, 0.8);
+		}
 	}
 
 }
