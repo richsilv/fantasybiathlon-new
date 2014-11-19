@@ -10,13 +10,15 @@
 
 <template name="athleteBlock">
   <div class="nav-panel athlete-panel {{details.color}} height-{{details.heightString}} {{details.extraClasses}}" style="padding: {{details.marginPct}}%; {{details.extraStyles}}">
-  	{{#each athletes}}
-  		{{> athlete}}
-  	{{/each}}
-    {{#if overlay}}
-    <div class="overlay-area {{#if dragOverlay}}visible{{/if}}">
+    <div class="block {{#if details.borders}}borders{{/if}}">
+    	{{#each athletes}}
+    		{{> athlete}}
+    	{{/each}}
+      {{#if overlay}}
+      <div class="overlay-area {{#if dragOverlay}}visible{{/if}}">
+      </div>
+      {{/if}}
     </div>
-    {{/if}}
   </div>
 </template>
 
@@ -32,7 +34,7 @@
 </template>
 
 <template name="athlete">
-	<div class="athlete" style="height: {{toPercent ../details.rows ../details.marginPct}}%; width: {{toPercent ../details.cols ../details.marginPct}}%; margin: {{../details.marginPct}}%;">
+	<div class="athlete {{#unless IBUId}}dummy{{/unless}}" style="height: {{toPercent ../details.rows ../details.marginPct}}%; width: {{toPercent ../details.cols ../details.marginPct}}%; margin: {{../details.marginPct}}%;">
   		<div class="athlete-background" style="background-image: {{athleteBackground this}};">
   		</div>
   {{#if IBUId}}
@@ -49,8 +51,7 @@
   <div class="athlete-tab {{GenderId}}-tab {{#unless eligible}}disabled{{/unless}}">
     <div class="athlete-tab-background" style="background-image: url('images/{{NAT}}.png')"></div>
     <div class="athlete-tab-contents">
-      <div class="uk-text-bold">{{FamilyName}}, {{abbreviate GivenName}}</div>
-      <div class="uk-text-bold">{{NAT}} - {{value}} points</div>
+      <div class="uk-text-bold">{{FamilyName}}, {{abbreviate GivenName}}<br>{{NAT}} - {{value}} points</div>
     </div>
   </div>
 </template>
@@ -63,4 +64,43 @@
           <div class="overlay-area-content" data-action="remove-athlete"><i class="uk-icon-trash"></i></div>
       </div>
   </div>
+</template>
+
+<template name="athleteInfo">
+  {{#with athlete}}
+  <div class="athlete-modal">
+    <h2 class="uk-display-inline">{{GivenName}} {{FamilyName}}</h2><h3 class="uk-display-inline"> ({{GenderId}})</h3>
+    <div class="uk-clearfix"></div>
+    <h3 class="uk-display-inline">{{fullNation NAT}} <div class="flag-badge" style="background-image: url('images/{{NAT}}small.png');"><div></div></div></h3>
+    <p>Value: <strong>{{value}}</strong></p>
+    <p>Points this season: <strong>{{points}}</strong></p>
+    <a data-action="show-results">Results this season</a>
+    <h4>Seasons</h4>
+    {{#each arrayify seasons}}
+      <a class="uk-margin-large-right" data-action="show-season" data-SeasonId="{{key}}">{{key}}</a>
+    {{/each}}
+  </div>
+  {{/with}}
+</template>
+
+<template name="athleteResults">
+  {{#with athlete}}
+  <div class="athlete-modal">
+    <h2 class="uk-display-inline">{{GivenName}} {{FamilyName}}</h2>
+    <div class="uk-clearfix"></div>
+    <ul>
+      {{#each results}}
+        <li>
+        {{#with raceDeets RaceId}}
+          {{Organizer}} ({{Nat}}), {{ShortDescription}} - {{briefTime StartTime}}
+        {{/with}}
+        Position: {{Rank}} 
+        Course Rank: {{courseRank}} 
+        Shooting Rank: {{shootRank}} 
+        Points: {{points}}
+        </li>
+      {{/each}}
+    </ul>
+  </div>  
+  {{/with}}
 </template>

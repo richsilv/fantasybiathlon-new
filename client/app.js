@@ -30,14 +30,31 @@ App.helpers = {
 		return App.dps(num, dp);
 	},
 	toPercent: function(num, marginPct) {
-		return (100 - (2 * marginPct * (num + 1))) / num;
+		return (100 - (2 * marginPct * (num))) / num;
 	},
   toNum: function(num) {
     return parseInt(num, 10) || 0;
   },
 	abbreviate: function(name) {
 		return name.match(/[A-Z]/g).join(' ');
-	}
+	},
+  arrayify: function(object) {
+    return _.reduce(object, function(list, val, key) {
+      if (typeof value === 'object') {
+        list.push(_.extend(value, {key: key}));
+      } else {
+        list.push({key: key, val: val});
+      }
+      return list;
+    }, []);
+  },
+  fullNation: function(code) {
+    var nat = Nations.findOne({Nat: code});
+    return nat ? nat.LongName : 'Unknown Nation';
+  },
+  briefTime: function(dateTime) {
+    return moment(dateTime).format("ddd, DD MMM YY");
+  }
 };
 
 _.each(App.helpers, function(helper, key) {
@@ -66,7 +83,7 @@ App.templateAttach = function(template, callback, data) {
 };
 
 App.confirmModal = function(options, postRender) {
-  App.templateAttach(
+  return App.templateAttach(
     Template.confirmModalWrapper, 
     function(instance) {
       var modal = $.UIkit.modal(".uk-modal");
@@ -77,6 +94,7 @@ App.confirmModal = function(options, postRender) {
       });
       modal.show();
       postRender && postRender.call(instance, options);
+      return modal;
     },
     _.extend({
       content: '',
@@ -88,7 +106,7 @@ App.confirmModal = function(options, postRender) {
 };
 
 App.generalModal = function(template, data, postRender) {
-  App.templateAttach(
+  return App.templateAttach(
     Template.generalModalWrapper, 
     function(instance) {
       var modal = $.UIkit.modal(".uk-modal");
@@ -99,6 +117,7 @@ App.generalModal = function(template, data, postRender) {
       });
       modal.show();
       postRender && postRender.call(instance, options);
+      return modal;
     },
     {
       template: template,

@@ -1,7 +1,7 @@
 TeamController = RouteController.extend({
   waitOn: function () {
   	return [
-  		Meteor.subscribe('core_data', '1314')
+  		Subs.subscribe('core_data', '1314')
   	];
   },
 

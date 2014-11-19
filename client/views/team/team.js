@@ -7,7 +7,6 @@ var teamState = new ReactiveDict(),
 Template.Team.events({
   'navigate': function(event, template) {
     event.preventDefault();
-    console.log(event);
   }
 });
 
@@ -44,6 +43,7 @@ Template.Team.helpers({
       marginPct: 1,
       color: 'dark-2',
       extraClasses: 'overlay ' + (changeAthlete ? 'small-text' : ''),
+      borders: !changeAthlete,
       extraStyles: 'z-index: 3;'
     }
   },
@@ -100,7 +100,9 @@ Template.athlete.events({
 });
 
 Template.teamDetails.helpers({
-  dragOverlay: !!AppState.get('dragOverlay'),
+  dragOverlay: function() {
+    return !!AppState.get('dragOverlay')
+  },
   value: function() {
     return teamState.get('teamValue');
   },
@@ -117,24 +119,71 @@ Template.athleteTab.helpers({
   eligible: function() {
     var eligibility = teamState.get('eligibility');
     return eligibility && eligibility.eligible.indexOf(this.IBUId) > -1;
+  },
+  seasonsDep: function() {
+    var dummy = this.seasonsSub.ready();
   }
 });
 
 Template.athleteTab.events({
   'dragstart .athlete-tab': function(event) {
-    $('.athlete-tab-panel').css('overflow-y', 'visible');
+    // $('.athlete-tab-panel').css('overflow-y', 'visible');
   },
   'dragstop .athlete-tab': function(event) {
-    $('.athlete-tab-panel').css('overflow-y', '');
+    // $('.athlete-tab-panel').css('overflow-y', '');
   },
   'click .athlete-tab': function(event, template) {
-    App.confirmModal({
-      header: this.FamilyName + ', ' + this.GivenName,
-      content: 'This is a description of the athlete',
-      noButtons: true,
-    });
+    Subs.subscribe('athlete_history', this.IBUId);
+    teamState.modal = App.generalModal('athleteInfo', {IBUId: this.IBUId});
   }
 });
+
+Template.athleteInfo.helpers({
+  athlete: function() {
+    return Athletes.findOne({IBUId: this.IBUId});
+  }
+});
+
+Template.athleteInfo.events({
+  'click [data-action="show-season"]': function(event, template) {
+    event.stopImmediatePropagation();
+    teamState.modal.hide();
+    var SeasonId = $(event.currentTarget).data(SeasonId);
+    Subs.subscribe('results', this.IBUId, SeasonId);
+    teamState.modal = App.generalModal('athleteSeason', {IBUId: this.IBUId, SeasonId: SeasonId});
+  },
+  'click [data-action="show-results"]': function(event, template) {
+    event.stopImmediatePropagation();
+    teamState.modal.hide();
+    var SeasonId = App.activeSeason;
+    Subs.subscribe('results', this.IBUId, SeasonId);
+    teamState.modal = App.generalModal('athleteSeason', {IBUId: this.IBUId, SeasonId: SeasonId});
+  },
+  'click': function() {
+    teamState.modal.hide();
+  }
+});
+
+Template.athleteResults.helpers({
+  athlete: function() {
+    return Athletes.findOne({IBUId: this.IBUId});
+  }, 
+  results: function() {
+    return Results.find(this);
+  },
+  raceDeets: function(RaceId) {
+    var race = Races.findOne({RaceId: RaceId}) || {};
+        event = Events.findOne({EventId: race.EventId}) || {};
+    return _.extend(event, race);
+  }
+});
+
+Template.athleteResults.events({
+  'click': function () {
+    teamState.modal.hide();
+  }
+});
+
 
 /*****************************************************************************/
 /* Team: Lifecycle Hooks */
@@ -156,6 +205,7 @@ Template.Team.rendered = function() {
     teamState.set('eligibility', eligibleAthletes(team));
     teamState.set('teamValue', teamValue(team));
   });
+
 };
 
 Template.Team.destroyed = function() {
@@ -185,7 +235,8 @@ Template.athleteBlock.rendered = function() {
 
   this.autorun(function() {
     if (teamState.get('changeAthlete')) {
-      _this.$(".athlete").draggable('option', 'disabled', false);
+      _this.$(".athlete:not(.dummy)").draggable('option', 'disabled', false);
+      _this.$(".athlete.dummy").draggable('option', 'disabled', true);
     } else {
       _this.$(".athlete").draggable('option', 'disabled', true);
     }
@@ -222,10 +273,18 @@ Template.athlete.rendered = function() {
 }
 
 Template.athleteTabs.rendered = function() {
+
+}
+
+Template.athleteTab.rendered = function() {
+
+  var _this = this;
+
   this.$(".athlete-tab").draggable({
     addClasses: false,
+    appendTo: '[data-momentum]',
     helper: function() {
-      return $('<div class="athlete-tab-dummy">' + $(this).children('.athlete-tab-contents').html() + '</div>');
+      return $('<div class="athlete-tab-dummy">' + $(this).children('.athlete-tab-contents')[0].outerHTML  + '</div>');
     },
     containment: 'document',
     delay: 600,
@@ -237,7 +296,18 @@ Template.athleteTabs.rendered = function() {
     scroll: false,
     scope: 'athlete-tabs'
   });
+
+  _this.autorun(function() {
+    teamState.get('eligibility');
+    Meteor.defer(function() {
+      _this.$('.athlete-tab:not(.disabled)').draggable("option", "disabled", false);
+      _this.$('.athlete-tab.disabled').draggable("option", "disabled", true);
+    });
+  });
+
 }
+
+// UTILITY FUNCTIONS
 
 function teamValue(team) {
 
@@ -265,20 +335,6 @@ function teamValue(team) {
   }
   return Math.round(value * 10) / 10;
 
-}
-
-function eligible(athlete, team) {
-  if (!team) team = Router.current().data().newTeam;
-  var price = teamValue(team),
-    athlete = athlete.price ? athlete : Athletes.findOne({
-      $or: [{
-        _id: athlete
-      }, {
-        IBUId: athlete
-      }]
-    });
-  if (!athlete) return false;
-  else if (price + athlete.price > MAX_VALUE) return false;
 }
 
 function transfers() {
@@ -328,10 +384,6 @@ function eligibleAthletes(team) {
 }
 
 // DELETE ME
-
-Tracker.autorun(function() {
-  console.log(teamState.get('eligibility'));
-});
 
 getTeamState = function() {
   return teamState;

@@ -1,9 +1,9 @@
 AdminController = RouteController.extend({
   waitOn: function () {
   	return [
-  		Meteor.subscribe('method_data'),
-  		Meteor.subscribe('core_data', '1314'),
-  		Meteor.subscribe('all_athletes')
+  		Subs.subscribe('method_data'),
+  		Subs.subscribe('core_data', '1314'),
+  		Subs.subscribe('all_athletes')
   	];
   },
 
