@@ -490,6 +490,23 @@ body .athlete-panel {
 	}
 }
 
+html body input[type].input-header {
+	background-color: rgba(0, 0, 0, 0);
+	border: none;
+	font-size: 36px;
+	line-height: 42px;
+	font-family: $base-heading-font-family;
+	font-weight: $base-heading-font-weight;
+	color: $base-heading-color;
+	text-align: right;
+	outline: none;
+	max-width: 100%;
+
+  	@include placeholder {
+    	color: rgba(255, 255, 255, 0.1);
+  	}	
+}
+
 // FLEXBOX SETTINGS
 
 .uk-flex {

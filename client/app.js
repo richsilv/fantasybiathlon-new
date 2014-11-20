@@ -29,6 +29,9 @@ App.helpers = {
 	dps: function(num, dp) {
 		return App.dps(num, dp);
 	},
+  percentage: function(num) {
+    return ~~(num * 10000) / 100;
+  },
 	toPercent: function(num, marginPct) {
 		return (100 - (2 * marginPct * (num))) / num;
 	},

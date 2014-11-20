@@ -7,6 +7,14 @@ var teamState = new ReactiveDict(),
 Template.Team.events({
   'navigate': function(event, template) {
     event.preventDefault();
+  },
+  'keyup [data-field="name"]': function(event, template) {
+    var set = {
+      'profile.team.name': $(event.currentTarget).val()
+    };
+    Meteor.users.update({_id: Meteor.userId()}, {
+      $set: set
+    });
   }
 });
 
@@ -27,7 +35,11 @@ Template.Team.helpers({
   },
 
   allAthletes: function() {
-    return Athletes.find({}, {sort: {value: -1}});
+    return Athletes.find({}, {
+      sort: {
+        value: -1
+      }
+    });
   },
 
   changeAthlete: function() {
@@ -126,38 +138,73 @@ Template.athleteTab.helpers({
 });
 
 Template.athleteTab.events({
-  'dragstart .athlete-tab': function(event) {
-    // $('.athlete-tab-panel').css('overflow-y', 'visible');
-  },
-  'dragstop .athlete-tab': function(event) {
-    // $('.athlete-tab-panel').css('overflow-y', '');
-  },
   'click .athlete-tab': function(event, template) {
+    var modal = {
+      template: 'athleteInfo',
+      data: {
+        IBUId: this.IBUId
+      }
+    };
     Subs.subscribe('athlete_history', this.IBUId);
-    teamState.modal = App.generalModal('athleteInfo', {IBUId: this.IBUId});
+    teamState.set('modal', modal);
+    $('.ui-draggable-dragging').remove();
+    teamState.modal = App.generalModal('athleteModal');
   }
 });
 
 Template.athleteInfo.helpers({
   athlete: function() {
-    return Athletes.findOne({IBUId: this.IBUId});
+    return Athletes.findOne({
+      IBUId: this.IBUId
+    });
+  }
+});
+
+Template.athleteModal.helpers({
+  page: function() {
+    return teamState.get('modal');
   }
 });
 
 Template.athleteInfo.events({
   'click [data-action="show-season"]': function(event, template) {
+    var _this = this,
+        parentData = Template.parentData(0);
     event.stopImmediatePropagation();
-    teamState.modal.hide();
     var SeasonId = $(event.currentTarget).data(SeasonId);
     Subs.subscribe('results', this.IBUId, SeasonId);
-    teamState.modal = App.generalModal('athleteSeason', {IBUId: this.IBUId, SeasonId: SeasonId});
+    $('.athlete-modal').animate({
+      opacity: 0
+    }, 250, function() {
+      teamState.set('modal', {
+        template: 'athleteSeason',
+        data: {
+          IBUId: parentData.IBUId,
+          SeasonData: _this
+        }
+      });
+    }).animate({
+      opacity: 1
+    }, 250);
   },
   'click [data-action="show-results"]': function(event, template) {
+    var _this = this;
     event.stopImmediatePropagation();
-    teamState.modal.hide();
     var SeasonId = App.activeSeason;
     Subs.subscribe('results', this.IBUId, SeasonId);
-    teamState.modal = App.generalModal('athleteSeason', {IBUId: this.IBUId, SeasonId: SeasonId});
+    $('.athlete-modal').animate({
+      opacity: 0
+    }, 250, function() {
+      teamState.set('modal', {
+        template: 'athleteResults',
+        data: {
+          IBUId: _this.IBUId,
+          SeasonId: SeasonId
+        }
+      });
+    }).animate({
+      opacity: 1
+    }, 250);
   },
   'click': function() {
     teamState.modal.hide();
@@ -166,20 +213,46 @@ Template.athleteInfo.events({
 
 Template.athleteResults.helpers({
   athlete: function() {
-    return Athletes.findOne({IBUId: this.IBUId});
-  }, 
+    return Athletes.findOne({
+      IBUId: this.IBUId
+    });
+  },
   results: function() {
     return Results.find(this);
   },
   raceDeets: function(RaceId) {
-    var race = Races.findOne({RaceId: RaceId}) || {};
-        event = Events.findOne({EventId: race.EventId}) || {};
+    var race = Races.findOne({
+      RaceId: RaceId
+    }) || {};
+    event = Events.findOne({
+      EventId: race.EventId
+    }) || {};
     return _.extend(event, race);
   }
 });
 
 Template.athleteResults.events({
-  'click': function () {
+  'click': function() {
+    teamState.modal.hide();
+  }
+});
+
+Template.athleteSeason.helpers({
+  athlete: function() {
+    return Athletes.findOne({
+      IBUId: this.IBUId
+    });
+  },
+  athleteSeason: function() {
+    return this.SeasonData.val;
+  },
+  SeasonId: function() {
+    return this.SeasonData.key;
+  }
+});
+
+Template.athleteSeason.events({
+  'click': function() {
     teamState.modal.hide();
   }
 });
@@ -272,10 +345,6 @@ Template.athlete.rendered = function() {
   });
 }
 
-Template.athleteTabs.rendered = function() {
-
-}
-
 Template.athleteTab.rendered = function() {
 
   var _this = this;
@@ -284,7 +353,7 @@ Template.athleteTab.rendered = function() {
     addClasses: false,
     appendTo: '[data-momentum]',
     helper: function() {
-      return $('<div class="athlete-tab-dummy">' + $(this).children('.athlete-tab-contents')[0].outerHTML  + '</div>');
+      return $('<div class="athlete-tab-dummy">' + $(this).children('.athlete-tab-contents')[0].outerHTML + '</div>');
     },
     containment: 'document',
     delay: 600,
@@ -305,6 +374,9 @@ Template.athleteTab.rendered = function() {
     });
   });
 
+}
+
+Template.athleteModal.created = function() {
 }
 
 // UTILITY FUNCTIONS
@@ -366,9 +438,9 @@ function eligibleAthletes(team) {
       },
       GenderId: {
         $nin: _.reduce(genders, function(arr, val, key) {
-      if (val > 1) arr.push(key);
-      return arr;
-    }, [])
+          if (val > 1) arr.push(key);
+          return arr;
+        }, [])
       }
     }, {
       fields: {
