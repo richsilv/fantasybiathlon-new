@@ -2,17 +2,34 @@
 /* Team: Event Handlers and Helpersss .js*/
 /*****************************************************************************/
 var teamState = new ReactiveDict(),
-  MAX_VALUE = 15;
+  userUpdateDebounce = _.debounceWithArgs(function(set) {
+    Meteor.users.update({
+      _id: Meteor.userId()
+    }, {
+      $set: set
+    });
+  }, 500);
 
 Template.Team.events({
   'navigate': function(event, template) {
     event.preventDefault();
   },
   'keyup [data-field="name"]': function(event, template) {
+    newName = template.$(event.currentTarget).val();
+    if (newName !== Meteor.user().profile.team.name) {
+      var set = {
+        'profile.team.name': template.$(event.currentTarget).val()
+      };
+      userUpdateDebounce(set);
+    }
+  },
+  'change [data-field="NAT"]': function(event, template) {
     var set = {
-      'profile.team.name': $(event.currentTarget).val()
+      'profile.team.country': event.added.id
     };
-    Meteor.users.update({_id: Meteor.userId()}, {
+    Meteor.users.update({
+      _id: Meteor.userId()
+    }, {
       $set: set
     });
   }
@@ -20,18 +37,13 @@ Template.Team.events({
 
 Template.Team.helpers({
   myAthletes: function() {
-    var team = this.newTeam,
-      athletes = Athletes.find({
-        IBUId: {
-          $in: team
-        }
-      }, {
-        limit: 4
-      }).fetch();
-    while (athletes.length < 4) {
-      athletes.push({});
-    }
-    return athletes;
+    var team = Router.current().data().newTeam.get();
+    return Router.current().data().newTeam.get().members;
+  },
+
+  name: function() {
+    user = Meteor.users.findOne(Meteor.connection._userId, {reactive: false});
+    return user.profile.team.name;
   },
 
   allAthletes: function() {
@@ -72,6 +84,15 @@ Template.Team.helpers({
 
   collapse: function() {
     return teamState.get('changeAthlete') ? '' : 'collapse';
+  },
+
+  nations: function() {
+    return Nations.find();
+  },
+
+  eligibility: function() {
+    var team = Router.current().data().newTeam;
+    return team.eligibleAthletes();
   }
 });
 
@@ -116,20 +137,49 @@ Template.teamDetails.helpers({
     return !!AppState.get('dragOverlay')
   },
   value: function() {
-    return teamState.get('teamValue');
+    var team = Router.current().data().newTeam;
+    return team.value();
   },
   transfers: function() {
-    return AppState.get('transfers');
+    return Meteor.user().profile.team.transfers - Router.current().data().newTeam.transfers(Router.current().data().currentTeam, true);
   },
   eligibility: function() {
-    return teamState.get('eligibility');
+    var team = Router.current().data().newTeam;
+    return team.eligibleAthletes();
   },
-  MAX_VALUE: MAX_VALUE
+  invalid: function() {
+    return !Router.current().data().newTeam.check() || 
+            Meteor.user().profile.team.transfers < Router.current().data().newTeam.transfers(Router.current().data().currentTeam, true);
+  },
+  MAX_VALUE: function() {
+    return window.App && App.MAX_VALUE;
+  }
+});
+
+Template.teamDetails.events({
+  'click [data-action="save-team"]:not("disabled")': function() {
+    var newTeam = Router.current().data().newTeam,
+      transfers = newTeam.transfers(Router.current().data().currentTeam);
+    App.confirmModal({
+      header: "Save Team?",
+      content: "<p>Are you sure you want to save this team?" + 
+                (transfers ? (" This will use up " + transfers + " transfer" + (transfers > 1 ? "s" : "") + ".</p>") : "</p>"),
+      callback: function() {
+        Meteor.call('team_methods/update_team', newTeam.memberIds(), function(err, res) {
+          if (res) {
+            modal = $.UIkit.modal(".uk-modal");
+            modal && modal.hide();
+            history.back();
+          }
+        });
+      }
+    });
+  }
 });
 
 Template.athleteTab.helpers({
   eligible: function() {
-    var eligibility = teamState.get('eligibility');
+    var eligibility = Template.parentData(1).eligibility;
     return eligibility && eligibility.eligible.indexOf(this.IBUId) > -1;
   },
   seasonsDep: function() {
@@ -145,7 +195,7 @@ Template.athleteTab.events({
         IBUId: this.IBUId
       }
     };
-    Subs.subscribe('athlete_history', this.IBUId);
+    Meteor.subscribe('athlete_history', this.IBUId);
     teamState.set('modal', modal);
     $('.ui-draggable-dragging').remove();
     teamState.modal = App.generalModal('athleteModal');
@@ -169,10 +219,10 @@ Template.athleteModal.helpers({
 Template.athleteInfo.events({
   'click [data-action="show-season"]': function(event, template) {
     var _this = this,
-        parentData = Template.parentData(0);
+      parentData = Template.parentData(0);
     event.stopImmediatePropagation();
     var SeasonId = $(event.currentTarget).data(SeasonId);
-    Subs.subscribe('results', this.IBUId, SeasonId);
+    Meteor.subscribe('results', this.IBUId, SeasonId);
     $('.athlete-modal').animate({
       opacity: 0
     }, 250, function() {
@@ -191,7 +241,7 @@ Template.athleteInfo.events({
     var _this = this;
     event.stopImmediatePropagation();
     var SeasonId = App.activeSeason;
-    Subs.subscribe('results', this.IBUId, SeasonId);
+    Meteor.subscribe('results', this.IBUId, SeasonId);
     $('.athlete-modal').animate({
       opacity: 0
     }, 250, function() {
@@ -265,18 +315,23 @@ Template.Team.created = function() {
 
   teamState.set('changeAthlete', 0);
   $(window).on('popstate', function(event) {
+    var user = Meteor.user();
+    Router.current().currentTeam.replace(user ? user.profile.team.members.memberIds() : []);
+    Router.current().newTeam.replace(Router.current().currentTeam.memberIds());
     teamState.set('changeAthlete', 0);
   });
 
 };
 
 Template.Team.rendered = function() {
-  Router.current().state.set('newTeam', AppState.get('currentTeam'));
+
+  $('select[data-field="NAT"]').select2({
+    minimumResultsForSearch: -1
+  });
 
   this.autorun(function() {
-    var team = Router.current().data().newTeam;
-    teamState.set('eligibility', eligibleAthletes(team));
-    teamState.set('teamValue', teamValue(team));
+    var user = Meteor.user();
+    $('select[data-field="NAT"]').select2('val', Meteor.user().profile.country);
   });
 
 };
@@ -290,10 +345,8 @@ Template.athleteBlock.rendered = function() {
 
   this.$(".athlete-panel").droppable({
     drop: function(e, ui) {
-      var stateObj = Router.current().state,
-        athlete = Blaze.getData(ui.draggable[0]),
-        newTeam = stateObj.get('newTeam');
-      if (newTeam.length < 4) stateObj.set('newTeam', newTeam.concat([athlete.IBUId]));
+      var athlete = Blaze.getData(ui.draggable[0]);
+      Router.current().data().newTeam.add(athlete.IBUId);
 
       // JUMP BACK TO POSITION INSTANTLY, THEN REVERT FLOAT BACK
       $(ui.draggable).draggable("option", "revertDuration", 0);
@@ -303,7 +356,8 @@ Template.athleteBlock.rendered = function() {
 
       AppState.set('dragOverlay', 0);
     },
-    scope: 'athlete-tabs'
+    scope: 'athlete-tabs',
+    tolerance: 'pointer'
   });
 
   this.autorun(function() {
@@ -319,13 +373,12 @@ Template.athleteBlock.rendered = function() {
 Template.teamDetails.rendered = function() {
   this.$('[data-action="remove-athlete"]').droppable({
     drop: function(e, ui) {
-      var stateObj = Router.current().state,
-        athlete = Blaze.getData(ui.draggable[0]),
-        newTeam = _.without(stateObj.get('newTeam'), athlete.IBUId);
-      stateObj.set('newTeam', newTeam);
+      var athlete = Blaze.getData(ui.draggable[0]);
+      Router.current().data().newTeam.remove(athlete.IBUId);
       AppState.set('dragOverlay', 0);
     },
-    scope: 'athletes'
+    scope: 'athletes',
+    tolerance: 'pointer'
   });
 }
 
@@ -367,7 +420,9 @@ Template.athleteTab.rendered = function() {
   });
 
   _this.autorun(function() {
-    teamState.get('eligibility');
+
+    Router.current().data().newTeam.depend();
+
     Meteor.defer(function() {
       _this.$('.athlete-tab:not(.disabled)').draggable("option", "disabled", false);
       _this.$('.athlete-tab.disabled').draggable("option", "disabled", true);
@@ -376,83 +431,10 @@ Template.athleteTab.rendered = function() {
 
 }
 
-Template.athleteModal.created = function() {
-}
-
-// UTILITY FUNCTIONS
-
-function teamValue(team) {
-
-  var value = 0;
-  if (!team) team = Router.current().data().newTeam;
-  if (team.fetch) {
-    team.forEach(function(athlete) {
-      value += athlete.value;
-    })
-  } else if (team instanceof Array) {
-    team.forEach(function(athlete) {
-      if (athlete.value) {
-        value += athlete.value;
-      } else {
-        var thisAthlete = Athletes.findOne({
-          $or: [{
-            _id: athlete
-          }, {
-            IBUId: athlete
-          }]
-        });
-        if (thisAthlete) value += thisAthlete.value;
-      }
-    });
-  }
-  return Math.round(value * 10) / 10;
-
-}
+Template.athleteModal.created = function() {}
 
 function transfers() {
   return Router.current().state.get('transfers');
-}
-
-function eligibleAthletes(team) {
-  if (!team) team = Router.current().data().newTeam;
-  var teamMembers = Athletes.find({
-      IBUId: {
-        $in: team
-      }
-    }).fetch(),
-    remainder = MAX_VALUE - teamValue(teamMembers),
-    genders = _.countBy(teamMembers, 'GenderId'),
-    ineligibleNations = _.reduce(_.countBy(teamMembers, 'NAT'), function(arr, val, key) {
-      if (val > 1) arr.push(key);
-      return arr;
-    }, []),
-    eligible = Athletes.find({
-      IBUId: {
-        $nin: team
-      },
-      value: {
-        $lte: remainder
-      },
-      NAT: {
-        $nin: ineligibleNations
-      },
-      GenderId: {
-        $nin: _.reduce(genders, function(arr, val, key) {
-          if (val > 1) arr.push(key);
-          return arr;
-        }, [])
-      }
-    }, {
-      fields: {
-        IBUId: 1
-      }
-    }).fetch();
-  return {
-    eligible: _.pluck(eligible, 'IBUId') || [],
-    genders: genders,
-    NATs: ineligibleNations,
-    remainder: remainder
-  };
 }
 
 // DELETE ME

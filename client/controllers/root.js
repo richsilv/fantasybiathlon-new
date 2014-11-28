@@ -1,7 +1,7 @@
 RootController = RouteController.extend({
   waitOn: function () {
    	return [
-  		Subs.subscribe('core_data', '1314')
+  		Subs.core
   	];
   },
 

@@ -7,10 +7,20 @@
 @import ".meteor/local/build/programs/server/assets/packages/wolves_bourbon/bourbon";
 
 $color-dark-1: #08335b;
+$color-dark-1-darker: darken($color-dark-1, 5%);
+$color-dark-1-lighter: lighten($color-dark-1, 5%);
 $color-dark-2: #24052c;
+$color-dark-2-darker: darken($color-dark-2, 5%);
+$color-dark-2-lighter: lighten($color-dark-2, 5%);
 $color-dark-3: #695a61;
+$color-dark-3-darker: darken($color-dark-3, 5%);
+$color-dark-3-lighter: lighten($color-dark-3, 5%);
 $color-light-1: #b7ba93;
+$color-light-1-darker: darken($color-light-1, 5%);
+$color-light-1-lighter: lighten($color-light-1, 5%);
 $color-light-2: #9dcaeb;
+$color-light-2-darker: darken($color-light-2, 5%);
+$color-light-2-lighter: lighten($color-light-2, 5%);
 $max-width: 768px;
 $max-width-borders: $max-width * 0.75;
 
@@ -30,6 +40,49 @@ $base-heading-font-weight:                       700 !default;
 $base-heading-color:                             rgba(255, 255, 255, 0.30);
 $base-heading-text-transform:                    none !default;
 $base-heading-margin-top:                        25px !default;
+
+$button-height:                                  2em;
+$button-mini-height:                             1em;
+$button-small-height:                            1.5em;
+$button-large-height:                            3em;
+$button-line-height:                             1.5em;
+$button-mini-line-height:                        0.8em;
+$button-small-line-height:                       1em;
+$button-large-line-height:                       2.5em;
+$button-mini-font-size:                          0.6em;
+$button-small-font-size:                         0.8em;
+$button-large-font-size:                         1.8em;
+$button-padding-horizontal:                      1em;
+$button-mini-padding-horizontal:                 0.5em;
+$button-small-padding-horizontal:                0.7em;
+$button-large-padding-horizontal:                1.5em;
+$button-font-size:                               1em;
+$button-background:                              $color-dark-1;
+$button-color:                                   $color-light-1;
+$button-hover-background:                        $color-dark-1-darker;
+$button-hover-color:                             $color-light-1-darker;
+$button-active-background:                       $color-dark-1-darker;
+$button-active-color:                            $color-light-1-darker;
+$button-primary-background:                      $color-dark-2;
+$button-primary-color:                           $color-light-2;
+$button-primary-hover-background:                $color-dark-2-darker;
+$button-primary-hover-color:                     $color-light-2-darker;
+$button-primary-active-background:               $color-dark-2-darker;
+$button-primary-active-color:                    $color-light-2-darker;
+$button-success-background:                      $color-light-1-darker;
+$button-success-color:                           $color-dark-2;
+$button-success-hover-background:                $color-light-1;
+$button-success-hover-color:                     $color-dark-2-lighter;
+$button-success-active-background:               $color-light-1;
+$button-success-active-color:                    $color-dark-2-lighter;
+$button-danger-background:                       $color-dark-3;
+$button-danger-color:                            $color-light-2;
+$button-danger-hover-background:                 $color-dark-3-darker;
+$button-danger-hover-color:                      $color-light-2-darker;
+$button-danger-active-background:                $color-dark-3-darker;
+$button-danger-active-color:                     $color-light-2-darker;
+$button-disabled-background:                     rgba(0, 0, 0, 0.25);
+$button-disabled-color:                          rgba(255, 255, 255, 0.1);
 
 @mixin box-shadows($shadow1, $shadow2) {
   -webkit-box-shadow: $shadow1, $shadow2;
@@ -83,15 +136,8 @@ html body input[type], html body .uk-form input[type] {
 	}
 }
 
-// SIZE SPECIFIC
-
-
-
-// MODAL SETTINGS
-
-
-
 @import ".meteor/local/build/programs/server/assets/packages/richsilv_uikit-sass/assets/scss/_uikit.scss";
+@import ".meteor/local/build/programs/server/assets/packages/richsilv_uikit-sass/assets/scss/components/form-select.scss";
 
 // CUSTOM ELEMENTS
 
@@ -99,7 +145,7 @@ html body input[type], html body .uk-form input[type] {
 	color: rgba(255, 255, 255, 0.50);
 }
 
-.light-background, .light-background * {
+.light-background, .light-background *:not(button) {
 	color: rgba(0, 0, 0, 0.40);
 
 	.bright {
@@ -262,6 +308,10 @@ html body input[type], html body .uk-form input[type] {
 	clear: right;
 }
 
+.text-error {
+	color: darkred !important;
+}
+
 .heading-block {
 	h1, h2, h3, h4, h5, h6 {
 		margin-top: 0.5em;
@@ -413,6 +463,7 @@ body .athlete-panel {
 
 .uk-modal.uk-open {
 	background: rgba(0, 0, 0, 0.85);
+	font-size: 1.5rem;
 }
 
 .athlete-modal {
@@ -490,21 +541,54 @@ body .athlete-panel {
 	}
 }
 
-html body input[type].input-header {
+html body input[type].input-header, html body select.input-header {
 	background-color: rgba(0, 0, 0, 0);
 	border: none;
 	font-size: 36px;
 	line-height: 42px;
 	font-family: $base-heading-font-family;
 	font-weight: $base-heading-font-weight;
-	color: $base-heading-color;
+	color: rgba(255, 255, 255, 0.5);
 	text-align: right;
 	outline: none;
 	max-width: 100%;
+	width: 100%;
 
   	@include placeholder {
     	color: rgba(255, 255, 255, 0.1);
   	}	
+}
+
+html body .select2-container {
+	background-image: none;
+	background-color: rgba(0, 0, 0, 0);
+	height: 1em;
+	line-height: 1em;
+
+	.select2-choice {
+		background-image: none;
+		background-color: rgba(0, 0, 0, 0);
+		font-family: $base-heading-font-family;
+		font-weight: $base-heading-font-weight;
+		color: rgba(255, 255, 255, 0.5);
+		text-align: right;
+		border: none;
+		height: 1em;
+		line-height: 1em;
+		box-shadow: none;
+
+		> .select2-chosen {
+			margin-right: 0px;
+		}
+	}
+
+	.select2-arrow {
+		visibility: hidden;
+	}
+
+	.select2-drop {
+
+	}
 }
 
 // FLEXBOX SETTINGS

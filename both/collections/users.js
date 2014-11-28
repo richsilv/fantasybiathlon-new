@@ -1,12 +1,29 @@
 var athleteRegex = new RegExp('^BT[A-Z]{3}$[0-9]{11}$'),
     teamArray = {
-    type: [athleteRegex],
-    maxCount: 4,
-    defaultValue: []   
-};
+        type: [athleteRegex],
+        maxCount: 4,
+        defaultValue: []
+    };
+
+Meteor.users._transform = function(user) {
+    user.profile.team.members = new FantasyTeam(user.profile.team.current);
+    return user;
+}
 
 Schemas.UserTeam = new SimpleSchema({
+    name: {
+        type: String,
+        defaultValue: 'My Team',
+        min: 1,
+        max: 25
+    },
     current: teamArray,
+    transfers: {
+        type: Number,
+        min: 0,
+        max: 4,
+        defaultValue: 2
+    },
     teamHistory: {
         type: [Object],
         defaultValue: []
@@ -22,7 +39,7 @@ Schemas.UserTeam = new SimpleSchema({
             return new Date();
         }
     },
-    'teamHistory.$.EndDate': {
+    'teamHistory.$.endDate': {
         type: Date,
         optional: true
     }
@@ -85,3 +102,35 @@ Schemas.User = new SimpleSchema({
 });
 
 Meteor.users.attachSchema(Schemas.User);
+
+Meteor.users.allow({
+    insert: function(userId, doc) {
+        return false;
+    },
+
+    update: function(userId, doc, fieldNames, modifier) {
+        var allowFields = ['profile.team.']
+
+        if (userId !== doc._id) return false;
+        if (_.difference(fieldNames, allowFields).length) return false;
+        return true;
+    },
+
+    remove: function(userId, doc) {
+        return userId === doc._id;
+    }
+});
+
+Meteor.users.deny({
+    insert: function(userId, doc) {
+        return false;
+    },
+
+    update: function(userId, doc, fieldNames, modifier) {
+        return false;
+    },
+
+    remove: function(userId, doc) {
+        return false;
+    }
+});

@@ -1,15 +1,26 @@
 TeamController = RouteController.extend({
-  waitOn: function () {
-  	return [
-  		Subs.subscribe('core_data', '1314')
-  	];
+
+  waitOn: function() {
+    return [
+      Subs.core
+    ];
+  },
+
+  onBeforeAction: function() {
+
+    if (!this.currentTeam) this.currentTeam = new FantasyTeam();
+    if (!this.newTeam) this.newTeam = new FantasyTeam();
+
+    var user = Meteor.user();
+    this.currentTeam.replace(user ? user.profile.team.members.memberIds() : []);
+    this.newTeam.replace(this.currentTeam.memberIds());
+    this.next();
   },
 
   data: function () {
-    currentTeam = AppState.get('currentTeam');
     return {
-      currentTeam: currentTeam,
-      newTeam: this.state.get('newTeam') || []
+      currentTeam: this.currentTeam,
+      newTeam: this.newTeam
     }
   },
 

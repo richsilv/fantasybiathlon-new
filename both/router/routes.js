@@ -1,8 +1,6 @@
 /*****************************************************************************/
 /* Client and Server Routes */
 /*****************************************************************************/
-Subs = new SubsManager();
-
 Router.configure({
   layoutTemplate: 'MasterLayout',
   notFoundTemplate: 'NotFound'

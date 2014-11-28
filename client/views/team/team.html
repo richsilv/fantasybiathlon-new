@@ -1,11 +1,19 @@
 <template name="Team">
   <div class="nav-panel dark-1 height-1-3 {{#if changeAthlete}}collapse{{/if}}">
-  	<h3 class="uk-margin-small-bottom">Name: </h3><h1 class="bright uk-margin-small-top uk-text-right"><input class="input-header bright" type="text" data-field="name" value="{{name}}" placeholder="My Team Name"></h1>
-  	<h3 class="uk-margin-small-top uk-margin-small-bottom">Nation: </h3><h1 class="bright uk-margin-small-top uk-text-right">Nation{{NAT}}</h1>
+  	<h3 class="uk-margin-small-bottom">Name: </h3>
+    <h1 class="bright uk-margin-small-top uk-text-right"><input class="input-header bright" type="text" data-field="name" maxlength="25" value="{{name}}" placeholder="My Team Name"></h1>
+  	<h3 class="uk-margin-small-top uk-margin-small-bottom">Nation: </h3>
+    <h1 class="bright uk-margin-small-top uk-text-right">
+      <select class="input-header" data-field="NAT">
+        {{#each nations}}
+          <option value={{Nat}}>{{LongName}}</option>
+        {{/each}}
+      </select>
+    </h1>
   </div>
   {{> teamDetails collapse=collapse}}
   {{> athleteBlock athletes=myAthletes details=athleteBlockDetails overlay=true}}
-  {{> athleteTabs athletes=allAthletes details=athleteTabsDetails}}
+  {{> athleteTabs athletes=allAthletes details=athleteTabsDetails eligibility=eligibility}}
 </template>
 
 <template name="athleteBlock">
@@ -58,8 +66,10 @@
 
 <template name="teamDetails">
   <div class="nav-panel height-1-6 dark-2 overlay heading-block {{collapse}}">
-      <h4 class="uk-float-left">Value: {{value}} / {{MAX_VALUE}}</h4><h4 class="uk-float-right">Transfers: {{transfers}}</h4>
-      <h4 class="uk-float-left clear-left">M / W: {{toNum eligibility.genders.M}} / {{toNum eligibility.genders.W}}</h4><button class="uk-button uk-button-primary uk-float-right"><h4>SAVE</h4></button>
+      <h4 class="uk-float-left">Value: {{dps value 1}} / {{MAX_VALUE}}</h4>
+      <h4 class="uk-float-right">Transfers: <span class="{{#if gt 0 transfers}}text-error{{/if}}">{{transfers}}</span></h4>
+      <h4 class="uk-float-left clear-left">M / W: {{toNum eligibility.genders.M}} / {{toNum eligibility.genders.W}}</h4>
+      <h4 class="uk-float-right"><button class="uk-button" disabled={{invalid}} data-action="save-team">SAVE</button></h4>
       <div class="overlay-area {{#if dragOverlay}}visible{{/if}}">
           <div class="overlay-area-content" data-action="remove-athlete"><i class="uk-icon-trash"></i></div>
       </div>

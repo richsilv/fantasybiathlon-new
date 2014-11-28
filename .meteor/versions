@@ -62,6 +62,7 @@ mongo-livedata@1.0.6
 mongo@1.0.8
 mrt:later@1.6.1
 mrt:moment@2.8.1
+natestrauser:select2@3.5.1
 npm-container@1.0.0
 oauth1@1.1.2
 oauth2@1.1.1

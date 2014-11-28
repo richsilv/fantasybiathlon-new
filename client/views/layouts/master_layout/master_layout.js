@@ -18,6 +18,16 @@ Template.MasterLayout.helpers({
 
 });
 
+Template.confirmModal.events({
+  'click [data-action="confirm"]': function (event, template) {
+    this.callback && this.callback.apply(this, $(event.currentTarget));
+  },
+  'click [data-action="cancel"]': function (event, template) {
+    var modal = $.UIkit.modal(".uk-modal");
+    modal && modal.hide();
+  }
+});
+
 /*****************************************************************************/
 /* MasterLayout: Lifecycle Hooks */
 /*****************************************************************************/
