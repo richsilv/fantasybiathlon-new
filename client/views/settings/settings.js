@@ -9,7 +9,10 @@ Template.Settings.events({
       header: 'Really Delete Account?',
       content: '<p>Are you <strong>sure</strong> you want to delete your account?  This cannot be reversed.</p>',
       callback: function() {
-        Meteor.call('user_methods/delete_account');
+        Meteor.call('user_methods/delete_account', function(err, res) {
+          $('.uk-modal').hide()
+          $('html').removeClass('uk-modal-page');
+        });
       }
     });
   },
@@ -36,12 +39,14 @@ Template.Settings.helpers({
 Template.rulesModal.events({
   'click': function () {
     modals.rulesModal && modals.rulesModal.hide();
+    $('html').removeClass('uk-modal-page');
   }
 });
 
 Template.scoringModal.events({
   'click': function () {
     modals.scoringModal && modals.scoringModal.hide();
+    $('html').removeClass('uk-modal-page');
   }
 });
 

@@ -168,6 +168,7 @@ Template.teamDetails.events({
           if (res) {
             modal = $.UIkit.modal(".uk-modal");
             modal && modal.hide();
+            $('html').removeClass('uk-modal-page');
             history.go(-2);
           }
         });
@@ -257,6 +258,7 @@ Template.athleteInfo.events({
   },
   'click': function() {
     teamState.modal.hide();
+    $('html').removeClass('uk-modal-page');
   }
 });
 
@@ -283,6 +285,7 @@ Template.athleteResults.helpers({
 Template.athleteResults.events({
   'click': function() {
     teamState.modal.hide();
+    $('html').removeClass('uk-modal-page');
   }
 });
 
@@ -303,6 +306,7 @@ Template.athleteSeason.helpers({
 Template.athleteSeason.events({
   'click': function() {
     teamState.modal.hide();
+    $('html').removeClass('uk-modal-page');
   }
 });
 

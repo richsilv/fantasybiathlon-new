@@ -25,6 +25,7 @@ Template.confirmModal.events({
   'click [data-action="cancel"]': function (event, template) {
     var modal = $.UIkit.modal(".uk-modal");
     modal && modal.hide();
+    $('html').removeClass('uk-modal-page');
   }
 });
 

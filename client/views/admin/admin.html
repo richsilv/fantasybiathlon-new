@@ -20,9 +20,14 @@
 		    	<label for="store-results-checkbox">Store Results </label><input id="store-results-checkbox" type="checkbox" data-field="store-results">
 	    	</div>
 		    <button type="button" class="uk-button uk-button-primary uk-button-large uk-margin-left" data-action="submit">Submit</button>
+		    <button type="button" class="uk-button uk-button-primary uk-button-large uk-margin-left" data-action="clear-db">Clear DB</button>
 		    <button type="button" class="uk-button uk-button-danger uk-button-large uk-margin-left uk-float-right" data-action="crawl-missing">Crawl Missing</button>		    
-		    <button type="button" class="uk-button uk-button-success uk-button-large uk-margin-left uk-float-right" data-action="update-points">Update Points</button>		    
+		    <button type="button" class="uk-button uk-button-success uk-button-large uk-margin-left uk-float-right" data-action="update-points">Update Points</button>
 		    <div class="uk-badge uk-badge-warning uk-float-right uk-margin-right">Missing Queries: {{missingQueries}}<br>Missing Points: {{missingPoints}}</div>
+		   	<div class="uk-clearfix uk-margin-top"></div>
+		 	<button type="button" class="uk-button uk-button-large uk-margin-left uk-float-right" data-action="update-seasons">Update Seasons</button>		    
+		    <button type="button" class="uk-button uk-button-large uk-margin-left uk-float-right" data-action="calc-aggregates">Calc Aggregates</button>
+		   	<div class="uk-clearfix"></div>
 		</form>
 		{{> httpData}}
 		<br>

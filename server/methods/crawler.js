@@ -42,13 +42,7 @@ var Future = Meteor.npmRequire('fibers/future'),
 	httpQueue = new LimitQueue(1000);
 
 Meteor.methods({
-	/*
-	 * Example:
-	 *  '/app/crawler/update/email': function (email) {
-	 *    Users.update({_id: this.userId}, {$set: {'profile.email': email}});
-	 *  }
-	 *
-	 */
+
 	'crawler/crawl': function(details, options) {
 
 		this.unblock();
@@ -277,9 +271,9 @@ function crawlMissing() {
 
 function getRecursion(res) {
 	var recursion = res.recursion,
-		topField = recursion.topField ? getSubObject(res.data, recursion.topField) : null,
+		topField = recursion.topField ? getSubObject(res.content, recursion.topField) : null,
 		topFieldObject = {},
-		subArray = getSubObject(res.data, recursion.subObject);
+		subArray = getSubObject(res.content, recursion.subObject);
 	if (topField) topFieldObject[recursion.topField] = topField;
 	if (!(subArray instanceof Array)) subArray = [subArray];
 	if (recursion.exclude) {
@@ -328,7 +322,8 @@ function bwAPICall(theseDetails) {
 				console.log("BIND ERROR!", e)
 			});
 			onComplete(null, (res && res.statusCode === 200) ? _.extend(theseDetails, {
-				data: res.data,
+				// data: res.data,
+				content: JSON.parse(res.content),
 				recursion: crawlInstructions.recursion
 			}) : _.extend(theseDetails, {
 				data: res ? res : err,
@@ -451,7 +446,7 @@ function storeRecords(records) {
 function storeRecord(record) {
 	switch (record.type) {
 		case 'Season':
-			_.each(record.data, function(event) {
+			_.each(record.content, function(event) {
 				Events.upsert({
 					EventId: event.EventId
 				}, {
@@ -463,7 +458,7 @@ function storeRecord(record) {
 			});
 			break;
 		case 'Event':
-			_.each(record.data, function(race) {
+			_.each(record.content, function(race) {
 				Races.upsert({
 					RaceId: race.RaceId
 				}, {
@@ -476,33 +471,33 @@ function storeRecord(record) {
 			});
 			break;
 		case 'Race':
-			_.each(record.data.Results, function(result) {
+			_.each(record.content.Results, function(result) {
 				Results.upsert({
-					RaceId: record.data.RaceId,
+					RaceId: record.content.RaceId,
 					IBUId: result.IBUId
 				}, {
 					$set: cleanResult(_.extend(result, {
-						RaceId: record.data.RaceId,
-						EventId: record.data.RaceId.slice(0, 12),
-						SeasonId: record.data.RaceId.slice(2, 6),
-						DisciplineId: record.data.RaceId.slice(16)
+						RaceId: record.content.RaceId,
+						EventId: record.content.RaceId.slice(0, 12),
+						SeasonId: record.content.RaceId.slice(2, 6),
+						DisciplineId: record.content.RaceId.slice(16)
 					}))
 				});
 			});
 			break;
 		case 'Analysis':
 			Analysis.upsert({
-				RaceId: record.data.RaceId,
-				IBUId: record.data.IBUId
+				RaceId: record.content.RaceId,
+				IBUId: record.content.IBUId
 			}, {
-				$set: record.data
+				$set: record.content
 			});
 			break;
 		case 'Athlete':
-			record.data.Athletes.length && Athletes.upsert({
-				IBUId: record.data.Athletes[0].IBUId
+			record.content.Athletes.length && Athletes.upsert({
+				IBUId: record.content.Athletes[0].IBUId
 			}, {
-				$set: record.data.Athletes[0]
+				$set: record.content.Athletes[0]
 			});
 			break;
 		case 'Bio':
@@ -512,7 +507,7 @@ function storeRecord(record) {
 			if (athlete) {
 				set = {};
 				_.each(bioFields, function(field) {
-					var val = _.find(record.data.Bios, function(bio) {
+					var val = _.find(record.content.Bios, function(bio) {
 						return bio.Description === field;
 					})
 					if (val) set [field] = val.Value;
@@ -814,7 +809,7 @@ function updateSeasonIndividual(season) {
 				totalPoints: sum(_.pluck(results, 'points'))
 			},
 			set = {};
-		set ['seasons.' + season] = data;
+		set['seasons.' + season] = data;
 		if (!athlete.seasons) Athletes.update(athlete, {
 			$set: {
 				seasons: {}

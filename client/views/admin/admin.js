@@ -63,6 +63,44 @@ Template.Admin.events({
     Meteor.call('crawler/update_points', function(err, res) {
       console.log(err, res);
     })
+  },
+
+  'click [data-action="clear-db"]': function(event, template) {
+    App.confirmModal({
+      header: 'Clear Database',
+      content: '<p><strong>Are you sure???</strong></p>',
+      callback: function() {
+        $('.uk-modal').hide();
+        $('html').removeClass('uk-modal-page');
+        Meteor.call('crawler/clear_database', function(err, res) {
+          Meteor.setTimeout(function() {
+            App.confirmModal({
+              header: 'COMPLETE',
+              noButtons: true
+            });
+          }, 1000);
+        });        
+      }
+    })
+  },
+
+  'click [data-action="update-seasons"]': function(event, template) {
+    Meteor.call('crawler/update_seasons', function(err, res) {
+      App.confirmModal({
+        header: 'COMPLETE',
+        noButtons: true
+      });
+    });
+  },
+
+  'click [data-action="calc-aggregates"]': function(event, template) {
+    var seasons = _.keys(_.groupBy(Races.find().fetch(), 'SeasonId'));
+    Meteor.call('crawler/calc_aggregates', seasons, function(err, res) {
+      App.confirmModal({
+        header: 'COMPLETE',
+        noButtons: true
+      });
+    });
   }
 })
 
