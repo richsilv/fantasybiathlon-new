@@ -39,8 +39,8 @@ Meteor.methods({
 	},
 
 	'team_methods/give_transfers': function(query, transfers) {
-		if (this.userId && !CollectionFunctions.isAdmin(this.userId))
-			throw new Meteor.Error('not_admin', 'Cannot perform this action without being an admin user');
+
+		CollectionFunctions.isAdmin(this.userId, true);
 
 		var total = Meteor.users.update(query, {
 			$inc: {

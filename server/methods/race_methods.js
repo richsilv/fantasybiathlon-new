@@ -6,17 +6,23 @@ Meteor.methods({
 
 	'race_methods/add_crons': function() {
 
+		CollectionFunctions.isAdmin(this.userId, true);
+
 		addCrons();
 
 	},
 
 	'race_methods/check_events': function() {
 
+		CollectionFunctions.isAdmin(this.userId, true);
+
 		checkEvents();
 
 	},
 
 	'race_methods/start_cron': function() {
+
+		CollectionFunctions.isAdmin(this.userId, true);
 
 		startCron();
 

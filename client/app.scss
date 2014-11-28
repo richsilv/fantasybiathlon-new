@@ -84,6 +84,8 @@ $button-danger-active-color:                     $color-light-2-darker;
 $button-disabled-background:                     rgba(0, 0, 0, 0.25);
 $button-disabled-color:                          rgba(255, 255, 255, 0.1);
 
+$table-hover-background:                         $color-dark-2;
+
 @mixin box-shadows($shadow1, $shadow2) {
   -webkit-box-shadow: $shadow1, $shadow2;
   -moz-box-shadow: $shadow1, $shadow2;
@@ -668,3 +670,19 @@ html body .select2-container {
 }
 
 .overlay-area-content > :last-child { margin-bottom: 0; }
+
+// ADMIN STYLES
+
+.admin-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow: auto;
+	color: rgba(255, 255, 255, 0.9);
+
+	.uk-button-group {
+		font-size: 1em;
+	}
+}

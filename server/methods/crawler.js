@@ -52,6 +52,9 @@ Meteor.methods({
 	'crawler/crawl': function(details, options) {
 
 		this.unblock();
+
+		CollectionFunctions.isAdmin(this.userId, true);
+
 		return crawl(details, options);
 
 	},
@@ -59,6 +62,8 @@ Meteor.methods({
 	'crawler/crawl_missing': function() {
 
 		this.unblock();
+
+		CollectionFunctions.isAdmin(this.userId, true);
 
 		return crawlMissing();
 
@@ -68,6 +73,8 @@ Meteor.methods({
 
 		this.unblock();
 
+		CollectionFunctions.isAdmin(this.userId, true);
+
 		return updatePoints(results);
 
 	},
@@ -75,6 +82,8 @@ Meteor.methods({
 	'crawler/update_seasons': function(seasons) {
 
 		this.unblock();
+
+		CollectionFunctions.isAdmin(this.userId, true);
 
 		return updateSeasons(seasons);
 
@@ -84,6 +93,8 @@ Meteor.methods({
 
 		this.unblock();
 
+		CollectionFunctions.isAdmin(this.userId, true);
+
 		return calcAggregates(seasons);
 
 	},
@@ -92,6 +103,8 @@ Meteor.methods({
 
 		this.unblock();
 
+		CollectionFunctions.isAdmin(this.userId, true);
+
 		return findMissingAthletes();
 
 	},
@@ -99,6 +112,8 @@ Meteor.methods({
 	'crawler/clear_database': function() {
 
 		this.unblock();
+
+		CollectionFunctions.isAdmin(this.userId, true);
 
 		Events.remove({});
 		Races.remove({});
@@ -441,8 +456,8 @@ function storeRecord(record) {
 					EventId: event.EventId
 				}, {
 					$set: _.extend(event, {
-						StartDate: new Date(event.StartDate),
-						EndDate: new Date(event.EndDate)
+						StartDate: new moment(event.StartDate).toDate(),
+						EndDate: new moment(event.EndDate).toDate()
 					})
 				});
 			});
@@ -455,7 +470,7 @@ function storeRecord(record) {
 					$set: _.extend(race, {
 						EventId: record.EventId,
 						SeasonId: record.EventId.slice(2, 6),
-						StartTime: new Date(record.StartTime)
+						StartTime: new moment(record.StartTime).toDate()
 					})
 				});
 			});
@@ -542,7 +557,7 @@ function cleanResult(result) {
 	result.TotalTime = timeToSecs(result.TotalTime);
 	result.Behind = timeToSecs(result.Behind);
 	result.Rank = parseInt(result.Rank, 10);
-	result.StartTime = new Date(result.StartTime);
+	result.StartTime = new moment(result.StartTime).toDate();
 	if (isNaN(result.Rank)) {
 		result.Rank = 999;
 	}

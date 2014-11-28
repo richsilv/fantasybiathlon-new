@@ -7,15 +7,15 @@ Races = new Mongo.Collection('races');
  */
  Races.allow({
   insert: function (userId, doc) {
-    return true;
+    return CollectionFunction.isAdmin(userId);
   },
 
   update: function (userId, doc, fieldNames, modifier) {
-    return true;
+    return CollectionFunction.isAdmin(userId);
   },
 
   remove: function (userId, doc) {
-    return true;
+    return CollectionFunction.isAdmin(userId);
   }
 });
 

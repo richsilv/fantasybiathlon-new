@@ -110,10 +110,10 @@ Template.athlete.helpers({
   athleteBackground: function(athlete) {
     var bString;
     if (athlete && athlete.IBUId)
-      bString = 'url(images/' + athlete.GenderId.toLowerCase() + 'avatar.png), ' +
+      bString = 'url(images/' + athlete.GenderId.toLowerCase() + 'avatar2.png), ' +
       'url(images/' + athlete.NAT + '.png)';
     else
-      bString = 'url(images/mavatar.png)'
+      bString = 'url(images/mavatar2.png)'
     return bString;
   }
 });

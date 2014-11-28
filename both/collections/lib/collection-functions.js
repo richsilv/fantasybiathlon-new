@@ -1,7 +1,9 @@
 CollectionFunctions = {
-	isAdmin: function(userId) {
+	isAdmin: function(userId, throwError) {
 		var user = Meteor.users.findOne(userId);
-		return user && user.profile.admin;
+		if (user && !user.profile.admin && throwError)
+			throw new Meteor.Error('not_admin', 'User does not have admin privileges.');
+		return !user || user.profile.admin;
 	}
 }
 
