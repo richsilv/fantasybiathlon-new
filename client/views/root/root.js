@@ -8,7 +8,14 @@ Template.Root.events({
 });
 
 Template.Root.helpers({
-
+	teamName: function() {
+		return Meteor.user().profile.team.name;
+	},
+	nextRace: function() {
+		var race = Races.findOne({StartTime: {$gt: new Date()}}, {sort: {StartTime: 1}}),
+			ev = Events.findOne({EventId: race && race.EventId});
+		return race && _.extend(race, ev);
+	}
 });
 
 /*****************************************************************************/

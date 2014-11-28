@@ -1,13 +1,13 @@
 /*****************************************************************************/
 /* Login: Event Handlers and Helpersss .js*/
 /*****************************************************************************/
+var loginOptions = Meteor.isCordova ? { loginStyle: "redirect" } : {};
+
 Template.Login.events({
-  /*
-   * Example:
-   *  'click .selector': function (e, tmpl) {
-   *
-   *  }
-   */
+  'click button': function(event, template) {
+    var vendor = $(event.currentTarget).data('vendor');
+    Meteor['loginWith' + vendor] && Meteor['loginWith' + vendor](loginOptions);
+  }
 });
 
 Template.Login.helpers({

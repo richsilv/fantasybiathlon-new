@@ -1,3 +1,69 @@
 <template name="Settings">
-  client/views/settings/settings.html
+	<div class="nav-panel height-1-2 dark-3">
+  		<h1 class="uk-position-absolute">Settings</h1>
+  		<div class="item-vertical-centered">
+   			<div class="uk-text-center">
+		  		<button class="uk-button uk-button-secondary uk-button-large uk-display-inline-block" data-action="logout">
+			  		Logout
+		  		</button>
+		  		<button class="uk-button uk-button-primary uk-button-large uk-display-inline-block uk-margin-left" data-action="delete-account">
+			  		Delete Account
+		  		</button>
+	  		</div>
+  		</div>
+  	</div>
+	<div class="nav-panel height-1-2 light-1">
+  		<h1 class="uk-position-absolute">Help</h1>
+  		<div class="item-vertical-centered">
+  			<div class="uk-text-center">
+		  		<button class="uk-button uk-button-danger uk-button-large uk-display-inline-block" data-action="rules">
+			  		Rules
+		  		</button>
+		  		<button class="uk-button uk-button-danger uk-button-large uk-display-inline-block uk-margin-left" data-action="scoring">
+			  		Scoring
+		  		</button>
+	  		</div>
+  		</div>
+  	</div>
+</template>
+
+<template name="rulesModal">
+  <div class="athlete-modal">
+    <h2>RULES</h2>
+    <div>
+    	<h3>Team Selection</h3>
+    	<p>To score points in any race, you must have a valid team saved:</p>
+    	<ul>
+    		<li>A team consists of <strong>two male</strong> athletes and <strong>two female</strong> athletes.</li>
+    		<li>You can choose a maximum of <strong>two</strong> athletes from any <strong>nation</strong>.</li>
+    		<li>The total value of your team can be no more than <strong>15.0</strong></li>
+    	</ul>
+     </div>
+     <div>
+    	<h3>Transfers</h3>
+    	<p>Transfers can be made at any time, but transfers made after a race has started will only become effective as of the next race, even if the transferred athlete hasn't started his or her race.</p>
+    	<p><strong>Two transfers</strong> will be granted following every meeting, and these can be used before, during or after any subsequent meeting.</p>
+    	<p>Transfers can be saved, but you can store no more than <strong>four transfers</strong> at any time.</p>
+    </div>
+  </div>
+</template>
+
+<template name="scoringModal">
+  <div class="athlete-modal">
+    <h2>SCORING</h2>
+    <h3>Sprint, Pursuit, Mass Start & Individual Races</h3>
+    <p>In all non-relay races, points will be scored for the following:</p>
+    <ul>
+    	<li><h5>Finishing Position:</h5> points awarded for finishing position from 1st to 20th as follows: 30, 25, 22, 20, 18, 16, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 and 1.</li>
+    	<li><h5>Fastest Skiers:</h5> the fastest five course times will receive an additional 10, 7, 5, 3, and 1 points respectively.</li>
+    	<li><h5>Best Shooting:</h5> the best five shooting performances will also receive an additional 10, 7, 5, 3 and 1 points.  Performances are determined <em>firstly</em> by number of targets missed and <em>then</em> by overall range time.</li>
+    	<li><h5>Clear Shoots:</h5> an additional point is awarded to all athletes for every clear visit to the range.  An additional <em>five points</em> are awarded for shooting clear throughout a race.  These are in addition to best shooting scores (above).</li>
+    </ul>
+    <h3>Men's, Women's and Mixed Relay Races</h3>
+    <p>In all relay races, points will be awarded for the following:</p>
+    <ul>
+    	<li><h5>Team Finishing Position:</h5> points awarded for being a member of the team finishing from first to eighth as follows: 15, 10, 8, 6, 4, 3, 2 and 1.</li>
+    	<li><h5>Clear Shoots:</h5> an additional five points are awarded to any athlete who uses no sapre rounds during their leg of the relay.</li>
+    </ul>
+  </div>
 </template>
