@@ -11,9 +11,6 @@ var teamState = new ReactiveDict(),
   }, 500);
 
 Template.Team.events({
-  'navigate': function(event, template) {
-    event.preventDefault();
-  },
   'keyup [data-field="name"]': function(event, template) {
     newName = template.$(event.currentTarget).val();
     if (newName !== Meteor.user().profile.team.name) {
@@ -37,8 +34,8 @@ Template.Team.events({
 
 Template.Team.helpers({
   myAthletes: function() {
-    var team = Router.current().data().newTeam.get();
-    return Router.current().data().newTeam.get().members;
+    var team = Router.current().newTeam;
+    return team && team.get().members;
   },
 
   name: function() {
@@ -65,7 +62,7 @@ Template.Team.helpers({
       rows: changeAthlete ? 1 : 2,
       cols: changeAthlete ? 4 : 2,
       marginPct: 1,
-      color: 'dark-2',
+      color: (changeAthlete ? 'dark-1' : 'light-1'),
       extraClasses: 'overlay ' + (changeAthlete ? 'small-text' : ''),
       borders: !changeAthlete,
       extraStyles: 'z-index: 3;'
@@ -76,7 +73,7 @@ Template.Team.helpers({
     var changeAthlete = teamState.get('changeAthlete');
     return {
       heightString: '7-12',
-      color: 'dark-1',
+      color: 'light-1',
       extraClasses: changeAthlete ? '' : 'collapse',
       extraStyles: 'z-index: 5;'
     }
@@ -91,8 +88,8 @@ Template.Team.helpers({
   },
 
   eligibility: function() {
-    var team = Router.current().data().newTeam;
-    return team.eligibleAthletes();
+    var team = Router.current().newTeam;
+    return team && team.eligibleAthletes();
   }
 });
 
@@ -137,19 +134,21 @@ Template.teamDetails.helpers({
     return !!AppState.get('dragOverlay')
   },
   value: function() {
-    var team = Router.current().data().newTeam;
-    return team.value();
+    var team = Router.current().newTeam;
+    return team && team.value();
   },
   transfers: function() {
-    return Meteor.user().profile.team.transfers - Router.current().data().newTeam.transfers(Router.current().data().currentTeam, true);
+    var team = Router.current().newTeam;
+    return Meteor.user().profile.team.transfers - (team ? team.transfers(Router.current().currentTeam, true) : 0);
   },
   eligibility: function() {
-    var team = Router.current().data().newTeam;
-    return team.eligibleAthletes();
+    var team = Router.current().newTeam;
+    return team && team.eligibleAthletes();
   },
   invalid: function() {
-    return !Router.current().data().newTeam.check() || 
-            Meteor.user().profile.team.transfers < Router.current().data().newTeam.transfers(Router.current().data().currentTeam, true);
+    var team = Router.current().newTeam;
+    return !team || !Router.current().newTeam.check() || 
+            Meteor.user().profile.team.transfers < Router.current().newTeam.transfers(Router.current().currentTeam, true);
   },
   MAX_VALUE: function() {
     return window.App && App.MAX_VALUE;
@@ -158,8 +157,8 @@ Template.teamDetails.helpers({
 
 Template.teamDetails.events({
   'click [data-action="save-team"]:not("disabled")': function() {
-    var newTeam = Router.current().data().newTeam,
-      transfers = newTeam.transfers(Router.current().data().currentTeam);
+    var newTeam = Router.current().newTeam,
+      transfers = newTeam.transfers(Router.current().currentTeam);
     App.confirmModal({
       header: "Save Team?",
       content: "<p>Are you sure you want to save this team?" + 
@@ -169,7 +168,7 @@ Template.teamDetails.events({
           if (res) {
             modal = $.UIkit.modal(".uk-modal");
             modal && modal.hide();
-            history.back();
+            history.go(-2);
           }
         });
       }
@@ -346,7 +345,7 @@ Template.athleteBlock.rendered = function() {
   this.$(".athlete-panel").droppable({
     drop: function(e, ui) {
       var athlete = Blaze.getData(ui.draggable[0]);
-      Router.current().data().newTeam.add(athlete.IBUId);
+      Router.current().newTeam.add(athlete.IBUId);
 
       // JUMP BACK TO POSITION INSTANTLY, THEN REVERT FLOAT BACK
       $(ui.draggable).draggable("option", "revertDuration", 0);
@@ -374,7 +373,7 @@ Template.teamDetails.rendered = function() {
   this.$('[data-action="remove-athlete"]').droppable({
     drop: function(e, ui) {
       var athlete = Blaze.getData(ui.draggable[0]);
-      Router.current().data().newTeam.remove(athlete.IBUId);
+      Router.current().newTeam.remove(athlete.IBUId);
       AppState.set('dragOverlay', 0);
     },
     scope: 'athletes',
@@ -421,7 +420,9 @@ Template.athleteTab.rendered = function() {
 
   _this.autorun(function() {
 
-    Router.current().data().newTeam.depend();
+    var team = Router.current().newTeam;
+
+    team && team.depend();
 
     Meteor.defer(function() {
       _this.$('.athlete-tab:not(.disabled)').draggable("option", "disabled", false);

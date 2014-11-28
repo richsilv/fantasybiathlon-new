@@ -3,7 +3,10 @@
 /*****************************************************************************/
 Router.configure({
   layoutTemplate: 'MasterLayout',
-  notFoundTemplate: 'NotFound'
+  notFoundTemplate: 'NotFound',
+  data: function() {
+  	return {};
+  }
 });
 
 Router.onBeforeAction(function() {

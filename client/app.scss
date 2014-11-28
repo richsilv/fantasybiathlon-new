@@ -106,6 +106,10 @@ $button-disabled-color:                          rgba(255, 255, 255, 0.1);
     text-shadow: $horizOffset $vertOffset $blur $color;
 }
 
+html, body {
+	background-color: $color-light-2;
+}
+
 html, body, [data-momentum] {
 	height: 100%;
 	overflow: hidden;
