@@ -752,6 +752,10 @@ html body .select2-container {
 
 .overlay-area-content > :last-child { margin-bottom: 0; }
 
+html .uk-description-list-horizontal>dt {
+	width: 50%;
+}
+
 // VENDOR STUFF
 
 $twitter-color:					  #55acee;
