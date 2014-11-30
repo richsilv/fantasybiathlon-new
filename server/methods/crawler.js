@@ -69,6 +69,8 @@ Meteor.methods({
 
 		CollectionFunctions.isAdmin(this.userId, true);
 
+		if (results && results.query) results = Results.find(query);
+
 		return updatePoints(results);
 
 	},
@@ -100,6 +102,19 @@ Meteor.methods({
 		CollectionFunctions.isAdmin(this.userId, true);
 
 		return findMissingAthletes();
+
+	},
+
+	'crawler/clear_future_results': function() {
+
+		this.unblock();
+
+		var futRaces = Races.find({StartTime: {$gt: new Date()}}).fetch(),
+			raceIds = _.pluck(futRaces, 'RaceId');
+
+		Results.remove({RaceId: {$in: raceIds}});
+
+		return true;
 
 	},
 
@@ -284,8 +299,8 @@ function getRecursion(res) {
 	return _.reduce(subArray, function(list, doc) {
 		if (doc) {
 			if (_.reduce(recursion.regex, function(bool, val, key) {
-				return doc[key].match(val) ? bool : false;
-			}, true)) list.push(_.extend(_.pick(doc, recursion.subFields), topFieldObject));
+					return doc[key].match(val) ? bool : false;
+				}, true)) list.push(_.extend(_.pick(doc, recursion.subFields), topFieldObject));
 		}
 		return list;
 	}, []);
@@ -465,7 +480,7 @@ function storeRecord(record) {
 					$set: _.extend(race, {
 						EventId: record.EventId,
 						SeasonId: record.EventId.slice(2, 6),
-						StartTime: new moment(record.StartTime).toDate()
+						StartTime: new moment(race.StartTime).toDate()
 					})
 				});
 			});
@@ -510,7 +525,7 @@ function storeRecord(record) {
 					var val = _.find(record.content.Bios, function(bio) {
 						return bio.Description === field;
 					})
-					if (val) set [field] = val.Value;
+					if (val) set[field] = val.Value;
 				})
 				Athletes.update({
 					IBUId: record.IBUId
@@ -623,7 +638,7 @@ function updateMissingCount() {
 	});
 }
 
-function updatePoints(results) {
+function updatePointsOld(results) { // DEPRECATED!!!
 
 	if (!results)
 		Results.find({
@@ -654,6 +669,118 @@ function updatePoints(results) {
 
 }
 
+function updatePoints(results) {
+
+	var cursor,
+		allResults,
+		races;
+
+	if (!results)
+		cursor = Results.find({
+			points: {
+				$exists: false
+			}
+		});
+	else if (results._cursorDescription)
+		cursor = results;
+	else if (results instanceof Array) {
+		if (results[0]._id) results = _.pluck(results, '_id');
+		cursor = Results.find({
+			_id: {
+				$in: results
+			}
+		});
+	} else if (results instanceof Object)
+		cursor = Results.find(results._id);
+	else
+		return false;
+
+	allResults = cursor.fetch();
+	races = _.groupBy(allResults, 'RaceId');
+
+	_.each(races, function(resultsList, raceId) {
+		updateRacePoints(raceId, resultsList);
+	});
+
+	updateActiveSeasons();
+	updateSeasons();
+
+	return missingPointsCount();
+
+}
+
+function updateRacePoints(raceId, results) {
+
+	var race = Races.findOne({
+			RaceId: raceId
+		}),
+		ev = Events.findOne({
+			EventId: race && race.EventId
+		});
+
+	if (!race || race.StartTime > new Date()) return missingPointsCount();
+
+	var shootOrder = _.pluck(Results.find({
+			RaceId: raceId,
+			ResultOrder: {
+				$lte: 998
+			}
+		}, {
+			sort: {
+				ShootingTotal: 1,
+				RangeTime: 1
+			},
+			fields: {
+				_id: 1
+			}
+		}).fetch(), '_id');
+
+	results = _.map(results, function(r) {
+
+		var points = 0;
+
+		if (r.ResultOrder < 999) {
+
+			if (r.RaceId.substr(r.RaceId.length - 2) === 'RL') {
+				points += relaypoints[r.ResultOrder] ? relaypoints[r.ResultOrder] : 0;
+				if (r.Shootings.reduce(function(tot, x) {
+						return tot + x;
+					}, 0) === 0) {
+					points += 5;
+				}
+			} else {
+				points += finishpoints[r.ResultOrder] ? finishpoints[r.ResultOrder] : 0;
+				points += smallpoints[r.CourseRank] ? smallpoints[r.CourseRank] : 0;
+				points += (r.ShootingTotal === 0 ? 5 : 0);
+				points += (r.Shootings.reduce(function(total, x) {
+					return x === 0 ? total + 1 : total;
+				}, 0));
+				points += smallpoints[_.indexOf(shootOrder, r._id)] || 0;
+			}
+			if (r.EventId.substr(r.RaceId.length - 2) === "__") points = points * 2;
+
+		}
+
+		r.points = points;
+
+		return r;
+
+	});
+
+	_.each(results, function(r) {
+		Results.update(r._id, {
+			$set: {
+				points: r.points,
+				EventId: ev && ev.EventId,
+				RaceStartTime: race.StartTime
+			}
+		});
+	});
+
+	return missingPointsCount();
+
+}
+
 function missingPointsCount() {
 	var count = Results.find({
 		points: {
@@ -670,8 +797,8 @@ function missingPointsCount() {
 }
 
 function updatePointsIndividual(result) {
-	var event = Races.findOne({
-			Races: result.EvendId
+	var event = Event.findOne({
+			EventId: result.EventId
 		}),
 		set = {};
 	if (event && event.StartTime) set.RaceStartTime = event.StartTime;
@@ -691,8 +818,8 @@ function resultPoints(r) {
 	if (r.RaceId.substr(r.RaceId.length - 2) === 'RL') {
 		points += relaypoints[r.ResultOrder] ? relaypoints[r.ResultOrder] : 0;
 		if (r.Shootings.reduce(function(tot, x) {
-			return tot + x;
-		}, 0) === 0) {
+				return tot + x;
+			}, 0) === 0) {
 			points += 5;
 		}
 	} else {
@@ -852,7 +979,11 @@ function calcAggregate(athlete, seasons) {
 		}
 	});
 	agg.averagePoints = agg.totalPoints / (agg.races || 1);
-	Athletes.update(athlete._id, {$set: {aggregate: agg}});
+	Athletes.update(athlete._id, {
+		$set: {
+			aggregate: agg
+		}
+	});
 	return true;
 
 }
@@ -876,9 +1007,20 @@ function average(array, limit) {
 }
 
 function findMissingAthletes() {
-	var names = _.reduce(_.keys(_.groupBy(Results.find({RaceId: {$not: /^.*MXRL$/}}).fetch(), 'IBUId')), function(list, ibuId) {
-		if (!relayRegex.exec(ibuId) && !Athletes.findOne({IBUId: ibuId})) {
-			var result = Results.findOne({IBUId: ibuId, RaceId: {$not: /^.*MXRL$/}});
+	var names = _.reduce(_.keys(_.groupBy(Results.find({
+		RaceId: {
+			$not: /^.*MXRL$/
+		}
+	}).fetch(), 'IBUId')), function(list, ibuId) {
+		if (!relayRegex.exec(ibuId) && !Athletes.findOne({
+				IBUId: ibuId
+			})) {
+			var result = Results.findOne({
+				IBUId: ibuId,
+				RaceId: {
+					$not: /^.*MXRL$/
+				}
+			});
 			if (result) {
 				var nameSplit = nameRegex.exec(result.Name),
 					newAthlete = {
@@ -889,9 +1031,14 @@ function findMissingAthletes() {
 						IBUId: ibuId
 					};
 				Athletes.insert(newAthlete);
-				MissingQueries.insert({IBUId: ibuId});
+				MissingQueries.insert({
+					IBUId: ibuId
+				});
 			}
-			list.push({Name: result && result.Name, IBUId: ibuId});
+			list.push({
+				Name: result && result.Name,
+				IBUId: ibuId
+			});
 		}
 		return list;
 	}, []);

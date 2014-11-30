@@ -45,7 +45,12 @@ function addCrons() {
 			job: function() {
 				Crawler.crawl({RaceId: race.RaceId}, {recursive: true, storeResults: true});
 				var thisRace = races.findOne(race._id);
-				if (thisRace.HasAnalysis) SyncedCron.remove(race.RaceId);
+				if (thisRace.HasAnalysis) {
+					SyncedCron.remove(race.RaceId);
+					Crawler.crawlMissing();
+					Crawler.updatePoints();
+					Crawler.updateSeasons([race.SeasonId]);
+				}
 			}
 		});
 
