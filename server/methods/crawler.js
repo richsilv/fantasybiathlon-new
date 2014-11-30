@@ -734,7 +734,7 @@ function updateRacePoints(raceId, results) {
 			EventId: race && race.EventId
 		});
 
-	if (!race || race.StartTime > new Date()) return missingPointsCount();
+	if (!race || race.StartTime > new Date() || race.disabled) return missingPointsCount();
 
 	var shootOrder = _.pluck(Results.find({
 		RaceId: raceId,
