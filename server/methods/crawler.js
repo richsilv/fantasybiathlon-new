@@ -145,6 +145,8 @@ Meteor.methods({
 
 	'crawler/update_current_points': function() {
 
+		this.unblock();
+
 		return updateCurrentPoints();
 
 	}
