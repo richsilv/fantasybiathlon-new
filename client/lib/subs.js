@@ -1,3 +1,3 @@
 Subs = {
-	core: Meteor.subscribe('core_data', '1314')
+	core: Meteor.subscribe('core_data', App.activeSeason)
 }

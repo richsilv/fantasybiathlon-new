@@ -94,8 +94,7 @@ Template.Admin.events({
   },
 
   'click [data-action="calc-aggregates"]': function(event, template) {
-    var seasons = _.keys(_.groupBy(Races.find().fetch(), 'SeasonId'));
-    Meteor.call('crawler/calc_aggregates', seasons, function(err, res) {
+    Meteor.call('crawler/calc_aggregates', ['1213', '1314'], function(err, res) {
       App.confirmModal({
         header: 'COMPLETE',
         noButtons: true
@@ -139,7 +138,7 @@ Template.athleteSettings.events({
         maxPoints = 11,
         minPoints = 0;
     Athletes.find().forEach(function(athlete) {
-      var s = sinusoid(athlete.aggregate.totalPoints, max, prop, maxPoints, minPoints, buffer);
+      var s = sinusoid(athlete.aggregate ? athlete.aggregate.totalPoints : 0, max, prop, maxPoints, minPoints, buffer);
       Athletes.update({_id: athlete._id}, {$set: {value: App.dps(s, 1)}});
     });    
   },

@@ -18,9 +18,7 @@ Meteor.publish('all_data', function() {
 });
 
 Meteor.publish('core_data', function(SeasonId) {
-	var athleteQuery = SeasonId ? {
-		activeSeasons: SeasonId
-	} : {
+	var athleteQuery = {
 		active: true
 	};
 	return [
@@ -51,14 +49,17 @@ Meteor.publish('core_data', function(SeasonId) {
 			}
 		}),
 		Events.find({
-			SeasonId: SeasonId
+			SeasonId: SeasonId,
+			EventId: {$regex: /^BT.+SWRL.+$/}
 		}, {
 			fields: {
 				EventId: 1,
 				SeasonId: 1,
 				Organizer: 1,
 				Nat: 1,
-				Description: 1
+				Description: 1,
+				StartDate: 1,
+				EndDate: 1
 			}
 		}),
 		Athletes.find(athleteQuery, {

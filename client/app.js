@@ -67,7 +67,7 @@ App.helpers = {
     return nat ? nat.LongName : 'Unknown Nation';
   },
   briefTime: function(dateTime) {
-    return moment(dateTime).format("ddd, DD MMM YY");
+    return moment(dateTime).format("ddd, DD MMM YY  HH:mm");
   }
 };
 

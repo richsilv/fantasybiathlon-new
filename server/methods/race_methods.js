@@ -48,8 +48,10 @@ function addCrons() {
 				if (thisRace.HasAnalysis) {
 					SyncedCron.remove(race.RaceId);
 					Crawler.crawlMissing();
+					Crawler.findMissingAthletes();
 					Crawler.updatePoints();
 					Crawler.updateSeasons([race.SeasonId]);
+					Crawler.updateCurrentPoints();
 				}
 			}
 		});

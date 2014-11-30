@@ -109,10 +109,18 @@ Meteor.methods({
 
 		this.unblock();
 
-		var futRaces = Races.find({StartTime: {$gt: new Date()}}).fetch(),
+		var futRaces = Races.find({
+				StartTime: {
+					$gt: new Date()
+				}
+			}).fetch(),
 			raceIds = _.pluck(futRaces, 'RaceId');
 
-		Results.remove({RaceId: {$in: raceIds}});
+		Results.remove({
+			RaceId: {
+				$in: raceIds
+			}
+		});
 
 		return true;
 
@@ -132,6 +140,12 @@ Meteor.methods({
 		MissingQueries.remove({});
 
 		return true;
+
+	},
+
+	'crawler/update_current_points': function() {
+
+		return updateCurrentPoints();
 
 	}
 
@@ -721,19 +735,19 @@ function updateRacePoints(raceId, results) {
 	if (!race || race.StartTime > new Date()) return missingPointsCount();
 
 	var shootOrder = _.pluck(Results.find({
-			RaceId: raceId,
-			ResultOrder: {
-				$lte: 998
-			}
-		}, {
-			sort: {
-				ShootingTotal: 1,
-				RangeTime: 1
-			},
-			fields: {
-				_id: 1
-			}
-		}).fetch(), '_id');
+		RaceId: raceId,
+		ResultOrder: {
+			$lte: 998
+		}
+	}, {
+		sort: {
+			ShootingTotal: 1,
+			RangeTime: 1
+		},
+		fields: {
+			_id: 1
+		}
+	}).fetch(), '_id');
 
 	results = _.map(results, function(r) {
 
@@ -895,7 +909,7 @@ function updateSeasons(seasons) {
 	else
 		return false;
 
-	updateActiveSeasons();
+	updateActiveSeasons(true);
 
 	_.each(seasons, function(season) {
 		updateSeasonIndividual(season);
@@ -1045,6 +1059,31 @@ function findMissingAthletes() {
 	return names;
 }
 
+function updateCurrentPoints() {
+
+	var points = 0;
+
+	Athletes.find().forEach(function(athlete) {
+		var results = Results.find({
+			SeasonId: App.activeSeason,
+			IBUId: athlete.IBUId
+		}, {
+			fields: {points: 1}
+		}).fetch(),
+			points = _.reduce(results, function(p, r) {
+			return r.points ? p + r.points: p;
+		}, 0);
+		Athletes.update(athlete._id, {
+			$set: {
+				points: points
+			}
+		});
+	});
+
+	return true;
+
+}
+
 // OBSERVE MISSING QUERIES TO KEEP COLLECTION UPDATED
 
 MissingQueries.find().observeChanges({
@@ -1058,5 +1097,7 @@ Crawler = {
 	crawl: crawl,
 	crawlMissing: crawlMissing,
 	updatePoints: updatePoints,
-	updateSeasons: updateSeasons
+	updateSeasons: updateSeasons,
+	findMissingAthletes: findMissingAthletes,
+	updateCurrentPoints: updateCurrentPoints
 }

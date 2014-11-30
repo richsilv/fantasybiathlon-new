@@ -32,7 +32,7 @@ $base-link-hover-text-decoration: none;
 $base-em-color: transparentize($color-dark-1, 0.5);
 $base-body-font-family: 'Open Sans Condensed', sans-serif;
 $base-body-font-weight:                          normal !default;
-$base-body-font-size:                            14px !default;
+$base-body-font-size:                            16px !default;
 $base-body-line-height:                          20px !default;
 $base-margin-vertical:                           15px !default;
 $base-heading-font-family: 'Orbitron', sans-serif;
@@ -146,6 +146,31 @@ html body input[type], html body .uk-form input[type] {
 @import ".meteor/local/build/programs/server/assets/packages/richsilv_uikit-sass/assets/scss/components/form-select.scss";
 
 // CUSTOM ELEMENTS
+
+h1 {
+	font-size: 2em !important;
+	line-height: 2em !important;
+}
+h2 {
+	font-size: 1.7em !important;
+	line-height: 1.7em !important;
+}
+h3 {
+	font-size: 1.5em !important;
+	line-height: 1.5em !important;
+}
+h4 {
+	font-size: 1.3em !important;
+	line-height: 1.3em !important;
+}
+h5 {
+	font-size: 1.15em !important;
+	line-height: 1.15em !important;
+}
+h6 {
+	font-size: 1em !important;
+	line-height: 1em !important;
+}
 
 .bold-header {
 	font-family: $base-heading-font-family;
@@ -314,6 +339,10 @@ html body input[type], html body .uk-form input[type] {
 	max-height: 91.5% !important;	
 }
 
+.overflow-container {
+	overflow: auto;
+}
+
 .large-text {
 	font-size: 1.3em;
 }
@@ -346,6 +375,25 @@ html body input[type], html body .uk-form input[type] {
 	position: relative;
 	top: 50%;
 	@include transform(translateY(-50%));	
+}
+
+.hidden {
+	height: 0;
+}
+
+.overflow-hidden {
+	overflow: hidden;
+}
+
+.height-transition {
+	@include transition-property(height);
+	@include transition-duration(1.0s);
+	@include transition-timing-function(ease-in);
+	@include transition-delay(0.5s);
+}
+
+.padding-small {
+	padding: 0.5em;
 }
 
 body .athlete-panel {
@@ -506,28 +554,28 @@ body .athlete-panel {
 	padding: 1em;
 
 	h1 {
-		font-size: 2.2em;
-		line-height: 2.2em;
+		font-size: 2.2em !important;
+		line-height: 2.2em !important;
 	}
 	h2 {
-		font-size: 1.9em;
-		line-height: 1.9em;
+		font-size: 1.9em !important;
+		line-height: 1.9em !important;
 	}
 	h3 {
-		font-size: 1.6em;
-		line-height: 1.6em;
+		font-size: 1.6em !important;
+		line-height: 1.6em !important;
 	}
 	h4 {
-		font-size: 1.4em;
-		line-height: 1.4em;
+		font-size: 1.4em !important;
+		line-height: 1.4em !important;
 	}
 	h5 {
-		font-size: 1.2em;
-		line-height: 1.2em;
+		font-size: 1.2em !important;
+		line-height: 1.2em !important;
 	}
 	h6 {
-		font-size: 1em;
-		line-height: 1em;
+		font-size: 1em !important;
+		line-height: 1em !important;
 	}
 
 	em {

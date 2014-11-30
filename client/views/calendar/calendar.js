@@ -1,6 +1,13 @@
 /*****************************************************************************/
 /* Calendar: Event Handlers and Helpersss .js*/
 /*****************************************************************************/
+var open = new ReactiveVar();
+
+Meteor.startup(function() {
+  var nextEvent = Events.findOne({SeasonId: App.activeSeason, EndDate: {$gt: new Date()}}, {sort: {EndDate: 1}});
+  open.set(nextEvent && nextEvent.EventId);
+});
+
 Template.Calendar.events({
   /*
    * Example:
@@ -11,12 +18,21 @@ Template.Calendar.events({
 });
 
 Template.Calendar.helpers({
-  /*
-   * Example:
-   *  items: function () {
-   *    return Items.find();
-   *  }
-   */
+  eventList: function() {
+    return Events.find({SeasonId: App.activeSeason}, {sort: {StartDate: 1}});
+  },
+  raceList: function() {
+    return Races.find({EventId: this.EventId}, {sort: {StartTime: 1}})
+  },
+  open: function() {
+    return this.EventId === open.get();
+  }
+});
+
+Template.eventHeader.events({
+  'click [data-action="change-event"]': function () {
+    open.set(this.EventId);
+  }
 });
 
 /*****************************************************************************/
