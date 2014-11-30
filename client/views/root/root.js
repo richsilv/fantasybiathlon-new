@@ -1,6 +1,8 @@
 /*****************************************************************************/
 /* Root: Event Handlers and Helpersss .js*/
 /*****************************************************************************/
+var welcomeShown = false;
+
 Template.Root.events({
     'click .nav-panel': function(event, template) {
         Router.go(template.$(event.currentTarget).data('link'));
@@ -23,6 +25,23 @@ Template.Root.helpers({
 /*****************************************************************************/
 Template.Root.created = function() {};
 
-Template.Root.rendered = function() {};
+Template.Root.rendered = function() {
+
+	Tracker.autorun(function(c) {
+		var welcome = Messages.findOne({key: 'welcome'});
+		if (welcomeShown) {
+			c.stop();
+		} else if (welcome) {
+			App.confirmModal({
+				content: welcome.message,
+				noButtons: true
+			});
+			c.stop();
+			welcomeShown = true;
+		}
+	});
+
+
+};
 
 Template.Root.destroyed = function() {};

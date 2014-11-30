@@ -74,7 +74,8 @@ Meteor.publish('core_data', function(SeasonId) {
 				points: 1
 			}
 		}),
-		Nations.find({})
+		Nations.find({}),
+		Messages.find({})
 	];
 });
 
