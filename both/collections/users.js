@@ -109,7 +109,7 @@ Meteor.users.allow({
     },
 
     update: function(userId, doc, fieldNames, modifier) {
-        var allowFields = ['profile.team.']
+        var allowFields = ['profile.team.name', 'profile.team.nation']
 
         if (userId !== doc._id) return false;
         if (_.difference(fieldNames, allowFields).length) return false;

@@ -55,8 +55,6 @@ function addJobs() {
 
 	races.forEach(function(race) {
 
-		console.log(race);
-
 		SyncedCron.add({
 			name: race.RaceId,
 			schedule: function(parser) {
