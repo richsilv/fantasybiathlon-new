@@ -25,7 +25,6 @@ fastclick
 percolate:momentum
 richsilv:uikit-sass
 percolate:momentum-iron-router
-wolves:bourbon
 linto:jquery-ui
 dsyko:jquery-ui-touch-punch
 richsilv:hammer
@@ -33,4 +32,5 @@ reactive-dict
 percolate:velocityjs
 meteorhacks:subs-manager
 natestrauser:select2
+wolves:bourbon
 

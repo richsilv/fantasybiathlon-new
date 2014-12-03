@@ -6,7 +6,7 @@ var athleteRegex = new RegExp('^BT[A-Z]{3}$[0-9]{11}$'),
     };
 
 Meteor.users._transform = function(user) {
-    user.profile.team.members = new FantasyTeam(user.profile.team.current);
+    user.profile && user.profile.team && (user.profile.team.members = new FantasyTeam(user.profile.team.current));
     return user;
 }
 

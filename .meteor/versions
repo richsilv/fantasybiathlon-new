@@ -80,7 +80,7 @@ reactive-var@1.0.3
 reload@1.1.1
 retry@1.0.1
 richsilv:cordova-notifications@0.1.3
-richsilv:hammer@0.1.4
+richsilv:hammer@0.2.0
 richsilv:uikit-sass@1.0.1
 routepolicy@1.0.2
 service-configuration@1.0.2
@@ -96,4 +96,4 @@ underscore@1.0.1
 url@1.0.2
 webapp-hashing@1.0.1
 webapp@1.1.4
-wolves:bourbon@0.7.0
+wolves:bourbon@0.8.0
