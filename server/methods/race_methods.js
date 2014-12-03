@@ -32,6 +32,18 @@ Meteor.methods({
 
 		resetCron();
 
+	},
+
+	'race_methods/get_cron_jobs': function() {
+
+		return SyncedCron._entries;
+
+	},
+
+	'race_methods/get_next_cron_job': function(jobId) {
+
+		return SyncedCron.nextScheduledAtDate(jobId);
+
 	}
 
 });

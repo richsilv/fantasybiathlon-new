@@ -94,7 +94,16 @@ Template.Admin.events({
   },
 
   'click [data-action="calc-aggregates"]': function(event, template) {
-    Meteor.call('crawler/calc_aggregates', ['1213', '1314'], function(err, res) {
+    Meteor.call('crawler/calc_aggregates', ['1415'], function(err, res) {
+      App.confirmModal({
+        header: 'COMPLETE',
+        noButtons: true
+      });
+    });
+  },
+
+  'click [data-action="update-current-points"]': function(event, template) {
+    Meteor.call('crawler/update_current_points', function(err, res) {
       App.confirmModal({
         header: 'COMPLETE',
         noButtons: true
