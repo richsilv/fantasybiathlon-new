@@ -122,6 +122,7 @@ html, body, [data-momentum] {
 	margin-left: auto;
 	margin-right: auto;
 	position: relative;
+	overflow-y: auto;
 
   @media screen and (max-width: $max-width) {
     font-size: $base-body-font-size * 0.9;
@@ -261,6 +262,14 @@ h6 {
 		max-width: $max-width-borders;
 		margin-left: auto;
 		margin-right: auto;
+	}
+
+	&.third-height {
+		min-height: 15em !important;
+	}
+
+	&.quarter-height {
+		min-height: 10em !important;
 	}
 }
 

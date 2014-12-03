@@ -1,19 +1,19 @@
 <template name="Root">
-  <div class="nav-panel nav-panel-arrow height-1-4 dark-1" data-link="team">
+  <div class="nav-panel quarter-height nav-panel-arrow height-1-4 dark-1" data-link="team">
   	<h1>Team</h1>
   	<h3>{{teamName}}</h3>
   </div>
-  <div class="nav-panel height-1-4 light-1">
+  <div class="nav-panel quarter-height height-1-4 light-1">
   	<h1>Leagues</h1>
   	<h3>Coming Soon...</h3>
   </div>
-  <div class="nav-panel nav-panel-arrow height-1-4 dark-2" data-link="calendar">
+  <div class="nav-panel quarter-height nav-panel-arrow height-1-4 dark-2" data-link="calendar">
   	<h1>Calendar</h1>
     {{#with nextRace}}
   	<h3>Next Race: {{Organizer}} {{ShortDescription}} - {{briefTime StartTime}}</h3>
     {{/with}}
   </div>
-  <div class="nav-panel nav-panel-arrow height-1-4 dark-3" data-link="settings">
+  <div class="nav-panel quarter-height nav-panel-arrow height-1-4 dark-3" data-link="settings">
   	<h1>Settings</h1>
   	<h3>Help and Account Settings</h3>
   </div>

@@ -139,7 +139,7 @@ Template.teamDetails.helpers({
   },
   transfers: function() {
     var team = Router.current().newTeam;
-    return Meteor.user().profile.team.transfers - (team ? team.transfers(Router.current().currentTeam, true) : 0);
+    return Meteor.user() && Meteor.user().profile.team.transfers - (team ? team.transfers(Router.current().currentTeam, true) : 0);
   },
   eligibility: function() {
     var team = Router.current().newTeam;
@@ -147,7 +147,7 @@ Template.teamDetails.helpers({
   },
   invalid: function() {
     var team = Router.current().newTeam;
-    return !team || !Router.current().newTeam.check() || 
+    return !team || !Router.current().newTeam.check() || !Meteor.user() ||
             Meteor.user().profile.team.transfers < Router.current().newTeam.transfers(Router.current().currentTeam, true);
   },
   MAX_VALUE: function() {
