@@ -56,12 +56,14 @@
 </template>
 
 <template name="athleteTab">
+  {{#if ready}}
   <div class="athlete-tab {{GenderId}}-tab {{#unless eligible}}disabled{{/unless}}">
     <div class="athlete-tab-background" style="background-image: url('images/{{NAT}}.png')"></div>
     <div class="athlete-tab-contents">
       <div class="uk-text-bold">{{FamilyName}}, {{abbreviate GivenName}}<br>{{NAT}} - val {{value}}</div>
     </div>
   </div>
+  {{/if}}
 </template>
 
 <template name="teamDetails">

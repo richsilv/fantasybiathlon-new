@@ -22,8 +22,9 @@ Template.Team.events({
   },
   'change [data-field="NAT"]': function(event, template) {
     var set = {
-      'profile.team.country': event.added.id
+      'profile.country': event.added.id
     };
+    console.log(event, event.added.id);
     Meteor.users.update({
       _id: Meteor.userId()
     }, {
@@ -178,6 +179,9 @@ Template.teamDetails.events({
 });
 
 Template.athleteTab.helpers({
+  ready: function() {
+    return Template.instance().ready.get();
+  },
   eligible: function() {
     var eligibility = Template.parentData(1).eligibility;
     return eligibility && eligibility.eligible.indexOf(this.IBUId) > -1;
@@ -401,25 +405,31 @@ Template.athlete.rendered = function() {
   });
 }
 
+Template.athleteTab.created = function() {
+  this.ready = new ReactiveVar(false);
+}
+
 Template.athleteTab.rendered = function() {
 
   var _this = this;
 
-  this.$(".athlete-tab").draggable({
-    addClasses: false,
-    appendTo: '[data-momentum]',
-    helper: function() {
-      return $('<div class="athlete-tab-dummy">' + $(this).children('.athlete-tab-contents')[0].outerHTML + '</div>');
-    },
-    containment: 'document',
-    delay: 600,
-    distance: 20,
-    opacity: 0.75,
-    revert: true,
-    revertDuration: 250,
-    zIndex: 100,
-    scroll: false,
-    scope: 'athlete-tabs'
+  Meteor.defer(function() {
+    this.$(".athlete-tab").draggable({
+      addClasses: false,
+      appendTo: '[data-momentum]',
+      helper: function() {
+        return $('<div class="athlete-tab-dummy">' + $(this).children('.athlete-tab-contents')[0].outerHTML + '</div>');
+      },
+      containment: 'document',
+      delay: 600,
+      distance: 20,
+      opacity: 0.75,
+      revert: true,
+      revertDuration: 250,
+      zIndex: 100,
+      scroll: false,
+      scope: 'athlete-tabs'
+    });
   });
 
   _this.autorun(function() {
@@ -433,6 +443,8 @@ Template.athleteTab.rendered = function() {
       _this.$('.athlete-tab.disabled').draggable("option", "disabled", true);
     });
   });
+
+  this.ready.set(true);
 
 }
 

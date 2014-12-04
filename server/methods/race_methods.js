@@ -88,16 +88,18 @@ function checkEvents() {
 		_.each([1, 3, 7], function(days) {
 			var schedule = new moment(event.StartDate).subtract(days, 'd').toDate();
 
-			SyncedCron.add({
-				name: event.EventId + days.toString() + 'd',
-				schedule: function(parser) {
-					return parser.recur().on(schedule).fullDate();
-				},
-				job: function() {
-					Crawler.crawl({EventId: event.EventId}, {recursive: true, storeResults: true});
-					SyncedCron.remove(event.EventId + days.toString() + 'd');
-				}
-			});
+			if (schedule > now) {
+				SyncedCron.add({
+					name: event.EventId + days.toString() + 'd',
+					schedule: function(parser) {
+						return parser.recur().on(schedule).fullDate();
+					},
+					job: function() {
+						Crawler.crawl({EventId: event.EventId}, {recursive: true, storeResults: true});
+						SyncedCron.remove(event.EventId + days.toString() + 'd');
+					}
+				});
+			}
 		});
 
 	});
