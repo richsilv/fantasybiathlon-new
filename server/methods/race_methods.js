@@ -65,7 +65,7 @@ function addJobs() {
 					from: 'SyncedCron@fantasybiathlon.meteor.com',
 					to: 'fantasybiathlon@gmail.com',
 					subject: 'Race Cron Running',
-					text: 'Race id ' + race.RaceId ', the ' + race.ShortDescription + ' which started at ' + race.StartTime.toString() + '.'
+					text: 'Race id ' + race.RaceId + ', the ' + race.ShortDescription + ' which started at ' + race.StartTime.toString() + '.'
 				});
 				Crawler.crawl({RaceId: race.RaceId}, {recursive: true, storeResults: true});
 				var thisRace = races.findOne(race._id);
