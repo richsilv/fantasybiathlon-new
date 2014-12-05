@@ -61,6 +61,12 @@ function addJobs() {
 				return parser.recur().every(15).minute().after(race.StartTime).fullDate();
 			},
 			job: function() {
+				Email.send({
+					from: 'SyncedCron@fantasybiathlon.meteor.com',
+					to: 'fantasybiathlon@gmail.com',
+					subject: 'Race Cron Running',
+					text: 'Race id ' + race.RaceId, ', the ' + race.ShortDescription + ' which started at ' + race.StartTime.toString() + '.'
+				});
 				Crawler.crawl({RaceId: race.RaceId}, {recursive: true, storeResults: true});
 				var thisRace = races.findOne(race._id);
 				if (thisRace.HasAnalysis) {
@@ -95,6 +101,12 @@ function checkEvents() {
 						return parser.recur().on(schedule).fullDate();
 					},
 					job: function() {
+						Email.send({
+							from: 'SyncedCron@fantasybiathlon.meteor.com',
+							to: 'fantasybiathlon@gmail.com',
+							subject: 'Checking Schedule',
+							text: 'Checking schedule for ' + event.EventId + ' (' + event.Organizer + ').'
+						});
 						Crawler.crawl({EventId: event.EventId}, {recursive: true, storeResults: true});
 						SyncedCron.remove(event.EventId + days.toString() + 'd');
 					}
