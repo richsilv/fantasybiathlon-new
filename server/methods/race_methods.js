@@ -61,21 +61,28 @@ function addJobs() {
 				return parser.recur().every(15).minute().after(race.StartTime).fullDate();
 			},
 			job: function() {
-				Email.send({
-					from: 'SyncedCron@fantasybiathlon.meteor.com',
-					to: 'fantasybiathlon@gmail.com',
-					subject: 'Race Cron Running',
-					text: 'Race id ' + race.RaceId + ', the ' + race.ShortDescription + ' which started at ' + race.StartTime.toString() + '.'
-				});
+				var result = 'Crawling at ' + new Date().toString() + '\n';
 				Crawler.crawl({RaceId: race.RaceId}, {recursive: true, storeResults: true});
 				var thisRace = races.findOne(race._id);
 				if (thisRace.HasAnalysis) {
 					SyncedCron.remove(race.RaceId);
+					result += 'Crawling Missing at ' + new Date().toString() + '\n';
 					Crawler.crawlMissing();
+					result += 'Crawling Missing Athletes at ' + new Date().toString() + '\n';
 					Crawler.findMissingAthletes();
+					result += 'Updating Points at ' + new Date().toString() + '\n';
 					Crawler.updatePoints();
+					result += 'Updating Seasons at ' + new Date().toString() + '\n';
 					Crawler.updateSeasons([race.SeasonId]);
+					result += 'Updating Current Points at ' + new Date().toString() + '\n';
 					Crawler.updateCurrentPoints();
+					Email.send({
+						from: 'SyncedCron@fantasybiathlon.meteor.com',
+						to: 'fantasybiathlon@gmail.com',
+						subject: 'Race Cron Running - ' + race.RaceId,
+						text: 'Race id ' + race.RaceId + ', the ' + race.ShortDescription + ' which started at ' + race.StartTime.toString() + '.\n' + result
+					});
+					return result;
 				}
 			}
 		});
