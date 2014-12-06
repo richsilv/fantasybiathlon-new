@@ -63,7 +63,7 @@ function addJobs() {
 			job: function() {
 				var result = 'Crawling at ' + new Date().toString() + '\n';
 				Crawler.crawl({RaceId: race.RaceId}, {recursive: true, storeResults: true});
-				var thisRace = races.findOne(race._id);
+				var thisRace = Races.findOne(race._id);
 				if (thisRace.HasAnalysis) {
 					SyncedCron.remove(race.RaceId);
 					result += 'Crawling Missing at ' + new Date().toString() + '\n';
