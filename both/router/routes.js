@@ -14,14 +14,14 @@ Router.onBeforeAction(function() {
 	if (!Meteor.user()) this.redirect('login');
 	else this.next();
 
-}, {except: ['login']});
+}, {except: ['login', 'reset.password']});
 
 Router.onBeforeAction(function() {
 
 	if (Meteor.user()) this.redirect('root');
 	else this.next();
 
-}, {only: ['login']});
+}, {only: ['login', 'reset.password']});
 
 Router.onBeforeAction(function() {
 
@@ -41,4 +41,5 @@ Router.route('/team', {name: 'team'});
 Router.route('/leagues', {name: 'leagues'});
 Router.route('/calendar', {name: 'calendar'});
 Router.route('/settings', {name: 'settings'});
-Router.route('/change_athlete/:IBUId', {name: 'change.athlete'});
+Router.route('/reset-password/:token', {name: 'reset.password'});
+

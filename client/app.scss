@@ -110,6 +110,10 @@ $table-hover-background:                         $color-dark-2;
 
 html, body {
 	background-color: $color-light-2;
+
+	.uk-button-group {
+		font-size: 1em;
+	}
 }
 
 html, body, [data-momentum] {
@@ -198,6 +202,10 @@ h6 {
 	.bright {
 		color: rgba(0, 0, 0, 0.60);		
 	}
+}
+
+.dark-background {
+	color: rgba(255, 255, 255, 0.30) !important;
 }
 
 .dark-1 {
@@ -798,6 +806,10 @@ $facebook-color: 				  #3b5998;
 
 .uk-facebook {
 	@include vendor($facebook-color, whitesmoke);
+}
+
+.uk-email {
+	@include vendor($color-dark-2, whitesmoke);
 }
 
 // ADMIN STYLES

@@ -65,16 +65,33 @@ Schemas.UserProfile = new SimpleSchema({
 });
 
 Schemas.User = new SimpleSchema({
-    registered_emails: {
+    emails: {
+        optional: true,
         type: [Object],
-        optional: true
+        custom: function () {
+            console.log(this);
+        }
     },
-    "registered_emails.$.address": {
+    "emails.$.address": {
+        optional: true,
         type: String,
         regEx: SimpleSchema.RegEx.Email
     },
-    "registered_emails.$.verified": {
+    "emails.$.verified": {
+        optional: true,
         type: Boolean
+    },
+    createdAt: {
+        type: Date
+    },
+    profile: {
+        type: Schemas.UserProfile,
+        optional: true
+    },
+    services: {
+        type: Object,
+        optional: true,
+        blackbox: true
     },
     createdAt: {
         type: Date,
@@ -93,11 +110,6 @@ Schemas.User = new SimpleSchema({
     profile: {
         type: Schemas.UserProfile,
         optional: true
-    },
-    services: {
-        type: Object,
-        optional: true,
-        blackbox: true
     }
 });
 

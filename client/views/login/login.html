@@ -9,9 +9,46 @@
     	<button type="button" class="uk-button uk-button-large uk-google uk-width-9-10 uk-margin-small-bottom" data-vendor="Google">
     		<i class="uk-icon-google"></i> Sign in with Google
     	</button>
-    	<button type="button" class="uk-button uk-button-large uk-facebook uk-width-9-10" data-vendor="Facebook">
+    	<button type="button" class="uk-button uk-button-large uk-facebook uk-width-9-10 uk-margin-small-bottom" data-vendor="Facebook">
     		<i class="uk-icon-facebook"></i> Sign in with Facebook
     	</button>
+        <button type="button" class="uk-button uk-button-large uk-email uk-width-9-10" data-action="login-with-email">
+            <i class="uk-icon-at"></i> Sign in with Email
+        </button>
     </div>
+</template>
 
+<template name="loginWithEmail">
+    <a href="#modal" data-uk-modal=""></a>
+    <div id="modal" class="uk-modal">
+        <div class="uk-modal-dialog light-1">
+            <a href="" class="uk-modal-close uk-close"></a>
+            <form class="uk-form uk-form-horizontal uk-margin-top">
+                <div class="uk-form-row">
+                    <label class="uk-form-label" for="email">Email</label>
+                    <div class="uk-form-controls">
+                        <input type="email" id="email" data-field="email" placeholder="Email address" class="uk-form-large uk-width-1-1">
+                    </div>
+                </div>
+                <div class="uk-form-row uk-width-1-1">     
+                    <label class="uk-form-label" for="password">Password</label>
+                    <div class="uk-form-controls">
+                        <input type="password" id="password" data-field="password" class="uk-form-large uk-width-1-1">
+                    </div>
+                </div>
+                <div class="uk-form-row">
+                    <button class="uk-button uk-button-link uk-button-small uk-float-right" data-action="forgotten-password">Forgotten Password</button>
+                </div>
+                {{#if error}}
+                    <div class="uk-alert dark-1 dark-background">{{error}}</div>
+                {{/if}}
+                <div class="uk-form-row uk-width-1-1">
+                    <div class="uk-button-group uk-width-1-1 uk-text-center">
+                        <button class="uk-button uk-button-primary" data-action="email-sign-up">Sign Up</button>
+                        <button class="uk-button uk-button-danger uk-margin-large-left" data-action="email-sign-in">Sign In</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </template>
