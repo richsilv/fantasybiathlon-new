@@ -19,6 +19,9 @@ Template.Settings.events({
   'click [data-action="logout"]': function(event, template) {
     Meteor.logout();
   },
+  'click [data-link="admin"]': function(event, template) {
+    Bender.go('admin');
+  },
   'click [data-action="rules"]': function(event, template) {
     modals.rulesModal = App.generalModal('rulesModal');
   },
@@ -28,6 +31,9 @@ Template.Settings.events({
 });
 
 Template.Settings.helpers({
+  admin: function() {
+    return Meteor.user().profile.admin;
+  }
   /*
    * Example:
    *  items: function () {
