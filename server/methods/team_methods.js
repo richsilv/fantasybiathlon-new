@@ -1,4 +1,4 @@
-/*****************************************************************************/
+	/*****************************************************************************/
 /* TeamMethods Methods */
 /*****************************************************************************/
 
@@ -86,7 +86,7 @@ function giveTransfers(query, transfers) {
 		$inc: {
 			'profile.team.transfers': transfers
 		}
-	});
+	}, {multi: true});
 	Meteor.users.update({
 		'profile.team.transfers': {
 			$gt: 4
@@ -95,7 +95,7 @@ function giveTransfers(query, transfers) {
 		$set: {
 			'profile.team.transfers': 4
 		}
-	});
+	}, {multi: true});
 
 	return total;
 
