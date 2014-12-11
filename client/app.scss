@@ -116,12 +116,12 @@ html, body {
 	}
 }
 
-html, body, [data-momentum] {
+html, body, #main-container {
 	height: 100%;
 	overflow: hidden;
 }
 
-[data-momentum] {
+#main-container {
 	max-width: 768px;
 	margin-left: auto;
 	margin-right: auto;
@@ -146,10 +146,52 @@ html body input[type], html body .uk-form input[type] {
 	}
 }
 
+.uk-grid.padding-right > * {
+
+	padding-left: 0;
+	padding-right: 15px;
+
+}
+
 @import ".meteor/local/build/programs/server/assets/packages/richsilv_uikit-sass/assets/scss/_uikit.scss";
 @import ".meteor/local/build/programs/server/assets/packages/richsilv_uikit-sass/assets/scss/components/form-select.scss";
 
 // CUSTOM ELEMENTS
+
+.hover-area-left {
+	position: absolute;
+	height: 100%;
+	width: 100px;
+	left: 50%;
+	@include transform(translateX(-484px));
+	@include transition(opacity 0.5s);
+	opacity: 0;
+
+	i {
+		color: rgba(0, 0, 0, 0.4);
+	}
+
+	&:hover {
+		opacity: 1;
+	}
+
+	&.disabled:hover {
+		opacity: 0;
+	}
+}
+
+html body .uk-table-hover tbody {
+	tr:hover { 
+		td {
+			color: $base-heading-color !important; 
+		}
+	}
+
+	tr.highlight {
+		font-weight: bold;
+		font-style: italic;
+	}
+}
 
 h1 {
 	font-size: 2em !important;
@@ -196,6 +238,10 @@ h6 {
 	color: rgba(255, 255, 255, 0.50);
 }
 
+.text-small {
+	font-size: 0.7em;
+}
+
 .light-background, .light-background *:not(button) {
 	color: rgba(0, 0, 0, 0.40);
 
@@ -228,6 +274,10 @@ h6 {
 .light-2 {
 	@extend .light-background;
 	background-color: $color-light-2;
+}
+
+.linethrough {
+	text-decoration: line-through;
 }
 
 .nav-panel {
@@ -386,6 +436,57 @@ h6 {
 	}
 }
 
+$icon-button-large-width: 70px;
+$icon-button-large-height: $icon-button-large-width;
+$icon-button-background: $color-dark-2;
+$icon-button-color: $color-light-1;
+$icon-button-disabled-background: $button-disabled-background;
+$icon-button-disabled-color: $button-disabled-color;
+
+.uk-icon-button-large {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline-block;
+    width: $icon-button-large-width;
+    height: $icon-button-large-height;
+    border-radius: $icon-button-border-radius;
+    background: $icon-button-background;
+    line-height: $icon-button-large-height;
+    color: $icon-button-color;
+    font-size: $icon-button-font-size * 2;
+    text-align: center;
+
+    @include hook-icon-button();
+
+    &:hover, &:focus {
+	    background-color: darken($icon-button-background, 10%);
+	    color: darken($icon-button-color, 10%);
+	    text-decoration: none;
+	    cursor: pointer;
+	    outline: none;
+	    @include hook-icon-button-hover();    	
+    }
+
+    &:active {
+	    background-color: darken($icon-button-background, 10%);
+	    color: darken($icon-button-color, 10%);
+	    @include hook-icon-button-active();
+    }
+
+    &.uk-disabled, &.uk-disabled:hover, &.uk-disabled:focus, &.uk-disabled:active {
+    	background-color: $icon-button-disabled-background;
+    	color: $icon-button-disabled-color;
+    	cursor: default;
+    }
+
+    @media screen and (max-width: $breakpoint-small) {
+    	width: $icon-button-large-width / 1.5;
+    	height: $icon-button-large-height / 1.5;
+    	line-height: $icon-button-large-height / 1.5;
+    	font-size: $icon-button-font-size / 1.5;
+    }
+}
+
 .item-vertical-centered {
 	display: block;
 	position: relative;
@@ -401,11 +502,9 @@ h6 {
 	overflow: hidden;
 }
 
-.height-transition {
+.height-transition, .height-transition * {
 	@include transition-property(height);
-	@include transition-duration(1.0s);
-	@include transition-timing-function(ease-in);
-	@include transition-delay(0.5s);
+	@include transition-duration(5000ms);
 }
 
 .padding-small {
@@ -653,6 +752,7 @@ html body input[type].input-header, html body select.input-header {
 	font-weight: $base-heading-font-weight;
 	color: rgba(255, 255, 255, 0.5);
 	text-align: right;
+	text-overflow: ellipsis;
 	outline: none;
 	max-width: 100%;
 	width: 100%;
@@ -809,7 +909,7 @@ $facebook-color: 				  #3b5998;
 }
 
 .uk-email {
-	@include vendor($color-dark-2, whitesmoke);
+	@include vendor(lighten($color-dark-2, 10%), whitesmoke);
 }
 
 // ADMIN STYLES

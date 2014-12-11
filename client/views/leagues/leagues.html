@@ -1,3 +1,36 @@
 <template name="Leagues">
-  client/views/leagues/leagues.html
+	<div class="nav-panel dark-1 quarter-height height-1-4">
+		<h1 class="uk-display-inline uk-float-left">Overall</h1>
+		<div class="uk-icon-button uk-icon-button-large uk-float-right uk-margin-left uk-disabled"><i class="uk-icon uk-icon-plus"></i></div>
+		<div class="uk-icon-button uk-icon-button-large uk-float-right uk-disabled"><i class="uk-icon uk-icon-group"></i></div>
+	</div>
+	<div class="nav-panel light-1 height-3-4">
+		<ul class="uk-pagination uk-margin-top" data-uk-pagination=""></ul>
+		<table class="uk-table uk-table-hover bright">
+			<caption>{{league}}</caption>
+			<thead>
+				<tr>
+					<th>Position</th>
+					<th>Name</th>
+					<th>Country</th>
+					<th>Points</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<td>Updated every minute</td>
+				</tr>
+			</tfoot>
+			<tbody>
+				{{#each teams}}
+				<tr class="{{#if isUser}}highlight{{/if}}">
+					<td>{{position}}</td>
+					<td>{{name}}</td>
+					<td>{{country}}</td>
+					<td>{{points}}</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
 </template>

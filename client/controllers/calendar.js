@@ -1,5 +1,5 @@
 CalendarController = RouteController.extend({
-  waitOn: function () {
+  subscriptions: function () {
   },
 
   data: function () {

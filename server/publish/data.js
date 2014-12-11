@@ -45,12 +45,15 @@ Meteor.publish('core_data', function(SeasonId) {
 				StartTime: 1,
 				ShortDescription: 1,
 				EventId: 1,
-				SeasonId: 1
+				SeasonId: 1,
+				disabled: 1
 			}
 		}),
 		Events.find({
 			SeasonId: SeasonId,
-			EventId: {$regex: /^BT.+SWRL.+$/}
+			EventId: {
+				$regex: /^BT.+SWRL.+$/
+			}
 		}, {
 			fields: {
 				EventId: 1,
@@ -106,4 +109,112 @@ Meteor.publish('all_athletes', function(SeasonId) {
 		activeSeasons: SeasonId
 	} : {};
 	return Athletes.find(query);
+});
+
+var idDict = {};
+
+Meteor.publish('team_ranking', function(query, skip, limit) {
+	query = query || {};
+
+	var _this = this,
+		posId = Random.id(),
+		user = Meteor.users.findOne(this.userId),
+		position = 1 + skip,
+		subHandle = limit && Meteor.users.find(query, {
+			sort: {
+				'profile.team.points': -1
+			},
+			skip: skip,
+			limit: limit,
+			fields: {
+				'profile.team.name': 1,
+				'profile.team.points': 1,
+				'profile.country': 1
+			}
+		}).observeChanges({
+			added: function(id, fields) {
+				if (fields.profile && fields.profile.team) {
+					var newId = idDict[id] ? idDict[id] : Random.id(),
+						ranking = {
+							name: fields.profile.team.name,
+							country: fields.profile.country,
+							points: fields.profile.team.points,
+							position: position++,
+							isUser: id === _this.userId
+						};
+					idDict[id] = newId;
+					_this.added('team_ranking', newId, ranking);
+				}
+			},
+			changed: function(id, fields) {
+				var ranking = {
+						name: fields.team.name,
+						country: fields.country,
+						points: fields.team.points
+					};
+				_this.changed('team_ranking', idDict[id], ranking);
+				_this.added('counts', posId, {
+					key: 'position',
+					value: myPos()
+				});					
+			},
+			removed: function(id) {
+				_this.removed('team_ranking', idDict[id]);
+			}
+		});
+
+	_this.added('counts', posId, {
+		key: 'position',
+		value: myPos()
+	})
+
+	_this.ready();
+
+	_this.onStop(function() {
+		subHandle && subHandle.stop();
+	});
+
+	function myPos() {
+		return Meteor.users.find({
+			'profile.team.points': {
+				$gt: user.profile.team.points
+			}
+		}).count() + 1;
+	}
+});
+
+Meteor.publish('counts', function() {
+
+	var _this = this,
+		ids = {
+			teams: Random.id(),
+			athletes: Random.id()
+		};
+
+	this.added('counts', ids['teams'], {
+		key: 'teams',
+		value: Meteor.users.find().count()
+	});
+	this.added('counts', ids['athletes'], {
+		key: 'athletes',
+		value: Athletes.find().count()
+	});
+
+	var interval = Meteor.setInterval(function() {
+		_this.added('counts', ids['teams'], {
+			key: 'teams',
+			value: Meteor.users.find().count()
+		});
+		_this.added('counts', ids['athletes'], {
+			key: 'athletes',
+			value: Athletes.find().count()
+		});		
+	}, 5000);
+
+	_this.ready();
+
+	_this.onStop(function() {
+		Meteor.clearInterval(interval);
+	});
+
 });

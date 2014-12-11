@@ -1,10 +1,10 @@
 <template name="Calendar">
   	<div class="uk-height-1-1 overflow-container dark-2 padding-small">
-	  	<ul class="uk-list uk-list-line uk-list-space">
+	  	<ul class="uk-list uk-list-line uk-list-space height-transition">
 	  	{{#each eventList}}
 	  		<li class="overflow-hidden">
 		  		{{> eventHeader}}
-		  		<ul class="uk-list height-transition {{#unless open}}hidden{{/unless}}">
+		  		<ul class="uk-list {{#unless open}}hidden{{/unless}}">
 		  			{{#each raceList}}
 		  				<li>{{> raceDetails}}</li>
 		  			{{/each}}
@@ -20,5 +20,5 @@
 </template>
 
 <template name="raceDetails">
-	<h4>{{ShortDescription}}, {{briefTime StartTime}}</h4>
+	<h4 class="{{#if disabled}}linethrough{{/if}}">{{ShortDescription}}, {{briefTime StartTime}}</h4>
 </template>

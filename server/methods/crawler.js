@@ -69,7 +69,7 @@ Meteor.methods({
 
 		CollectionFunctions.isAdmin(this.userId, true);
 
-		if (results && results.query) results = Results.find(query);
+		if (results && results.query) results = Results.find(results.query);
 
 		return updatePoints(results);
 
@@ -153,7 +153,7 @@ Meteor.methods({
 
 });
 
-function crawl(details, options) {
+function crawl(details, options, callback) {
 
 	options = options || {};
 
@@ -282,6 +282,8 @@ function crawl(details, options) {
 
 	clearMethodData();
 
+	callback && callback.apply(this);
+
 	return {
 		results: results
 	};
@@ -289,6 +291,10 @@ function crawl(details, options) {
 }
 
 function crawlMissing() {
+
+	var queries = MissingQueries.find().fetch();
+
+	if (!queries.length) return null;
 
 	var results = crawl(MissingQueries.find().fetch(), {
 		storeResults: true,
@@ -771,7 +777,8 @@ function updateRacePoints(raceId, results) {
 				points += (r.Shootings.reduce(function(total, x) {
 					return x === 0 ? total + 1 : total;
 				}, 0));
-				points += smallpoints[_.indexOf(shootOrder, r._id)] || 0;
+				r.ShootingRank = _.indexOf(shootOrder, r._id);
+				points += smallpoints[r.ShootingRank] || 0;
 			}
 			if (r.EventId.substr(r.RaceId.length - 2) === "__") points = points * 2;
 
@@ -787,6 +794,7 @@ function updateRacePoints(raceId, results) {
 		Results.update(r._id, {
 			$set: {
 				points: r.points,
+				ShootingRank: r.ShootingRank + 1,
 				EventId: ev && ev.EventId,
 				RaceStartTime: race.StartTime
 			}
@@ -939,6 +947,9 @@ function updateSeasonIndividual(season) {
 				aveCourseRank: average(_.pluck(results, 'CourseRank'), 999),
 				bestCourseRank: Math.min.apply(null, _.pluck(results, 'CourseRank')),
 				worstCourseRank: Math.max.apply(null, _.pluck(results, 'CourseRank')),
+				aveShootingRank: average(_.pluck(results, 'ShootingRank'), 999),
+				bestShootingRank: Math.min.apply(null, _.pluck(results, 'ShootingRank')),
+				worstShootingRank: Math.max.apply(null, _.pluck(results, 'ShootingRank')),
 				aveRangeRank: average(_.pluck(results, 'RangeRank'), 999),
 				bestRangeRank: Math.min.apply(null, _.pluck(results, 'RangeRank')),
 				worstRangeRank: Math.max.apply(null, _.pluck(results, 'RangeRank')),

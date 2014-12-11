@@ -1,9 +1,16 @@
 <template name="MasterLayout">
-	{{#momentum plugin='iron-router' options=transition}}
+	<div class="hover-area-left {{#if routeExcludeSwipeBack}}disabled{{/if}}">
+  		<div class="item-vertical-centered">
+   			<div class="uk-text-center">
+	   			<i class="uk-icon uk-icon-large uk-icon-backward"></i>
+   			</div>
+		</div>
+	</div>
+	<div id="main-container">
 		<div class="uk-height-1-1">
 	  	{{> yield}}
 	  	</div>
-	{{/momentum}}
+  	</div>
 </template>
 
 <template name="confirmModalWrapper">

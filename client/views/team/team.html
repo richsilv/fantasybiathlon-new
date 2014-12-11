@@ -2,18 +2,31 @@
   <div class="nav-panel dark-1 height-1-3 {{#if changeAthlete}}collapse{{/if}}">
   	<h3 class="uk-margin-small-bottom">Name: </h3>
     <h1 class="bright uk-margin-small-top uk-text-right"><input class="input-header bright" type="text" data-field="name" maxlength="25" value="{{name}}" placeholder="My Team Name"></h1>
-  	<h3 class="uk-margin-small-top uk-margin-small-bottom">Nation: </h3>
-    <h1 class="bright uk-margin-small-top uk-text-right">
-      <select class="input-header" data-field="NAT">
-        {{#each nations}}
-          <option value={{Nat}}>{{LongName}}</option>
-        {{/each}}
-      </select>
-    </h1>
+    <div class="uk-grid padding-right">
+        <div class="uk-width-1-2">
+          <h3 class="uk-margin-small-top uk-margin-small-bottom">Nation: </h3>
+          <h1 class="bright uk-margin-small-top uk-text-right">
+            <select class="input-header" data-field="NAT">
+              {{#each nations}}
+                <option value={{Nat}}>{{LongName}}</option>
+              {{/each}}
+            </select>
+          </h1>          
+        </div>
+        <div class="uk-width-1-2">
+          <h3 class="uk-margin-small-top uk-margin-small-bottom">Points: </h3>
+          <h1 class="bright uk-margin-small-top uk-text-right">
+            {{points}}
+          </h1>            
+        </div>
+    </div>
+
   </div>
   {{> teamDetails collapse=collapse}}
   {{> athleteBlock athletes=myAthletes details=athleteBlockDetails overlay=true}}
-  {{> athleteTabs athletes=allAthletes details=athleteTabsDetails eligibility=eligibility}}
+  {{#if athleteBlock}}
+    {{> athleteTabs athletes=allAthletes details=athleteTabsDetails eligibility=eligibility}}
+  {{/if}}
 </template>
 
 <template name="athleteBlock">
@@ -56,14 +69,12 @@
 </template>
 
 <template name="athleteTab">
-  {{#if ready}}
   <div class="athlete-tab {{GenderId}}-tab {{#unless eligible}}disabled{{/unless}}">
     <div class="athlete-tab-background" style="background-image: url('images/{{NAT}}.png')"></div>
     <div class="athlete-tab-contents">
       <div class="uk-text-bold">{{FamilyName}}, {{abbreviate GivenName}}<br>{{NAT}} - val {{value}}</div>
     </div>
   </div>
-  {{/if}}
 </template>
 
 <template name="teamDetails">
@@ -104,17 +115,17 @@
     <h2 class="uk-display-inline">{{GivenName}} {{FamilyName}}</h2>
     <div class="uk-clearfix"></div>
   {{/with}}
-  <dl class="uk-description-list-horizontal">
+  <dl class="uk-description-list-line text-small">
     {{#each results}}
-      <dt>
+      <dt class="uk-text-primary">
       {{#with raceDeets RaceId}}
         {{Organizer}} ({{Nat}}), {{ShortDescription}} - {{briefTime StartTime}}
       {{/with}}
       </dt><dd>
-      Position: {{Rank}} 
-      Course Rank: {{courseRank}} 
-      Shooting Rank: {{shootRank}} 
-      Points: {{points}}
+      Position: {{correct Rank}} 
+      Course Rank: {{correct CourseRank}} 
+      Shooting Rank: {{correct ShootingRank}} 
+      Points: {{correct points}}
       </dd>
     {{/each}}
   </dl>

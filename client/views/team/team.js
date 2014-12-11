@@ -44,6 +44,11 @@ Template.Team.helpers({
     return user.profile.team.name;
   },
 
+  points: function() {
+    user = Meteor.users.findOne(Meteor.connection._userId, {reactive: false});
+    return user.profile.team.points;    
+  },
+
   allAthletes: function() {
     return Athletes.find({}, {
       sort: {
@@ -179,9 +184,6 @@ Template.teamDetails.events({
 });
 
 Template.athleteTab.helpers({
-  ready: function() {
-    return Template.instance().ready.get();
-  },
   eligible: function() {
     var eligibility = Template.parentData(1).eligibility;
     return eligibility && eligibility.eligible.indexOf(this.IBUId) > -1;
@@ -273,7 +275,7 @@ Template.athleteResults.helpers({
     });
   },
   results: function() {
-    return Results.find(this);
+    return Results.find(this, {sort: {RaceStartTime: 1}});
   },
   raceDeets: function(RaceId) {
     var race = Races.findOne({
@@ -374,7 +376,11 @@ Template.athleteBlock.rendered = function() {
     } else {
       _this.$(".athlete").draggable('option', 'disabled', true);
     }
-  })
+  });
+
+  Meteor.defer(function() {
+    Router.current().state.set('athleteBlock', true);
+  });  
 };
 
 Template.teamDetails.rendered = function() {
@@ -405,18 +411,19 @@ Template.athlete.rendered = function() {
   });
 }
 
-Template.athleteTab.created = function() {
+Template.athleteTabs.created = function() {
   this.ready = new ReactiveVar(false);
+  this.timer = new Date();
 }
 
-Template.athleteTab.rendered = function() {
+Template.athleteTabs.rendered = function() {
 
   var _this = this;
 
   Meteor.defer(function() {
     this.$(".athlete-tab").draggable({
       addClasses: false,
-      appendTo: '[data-momentum]',
+      appendTo: '#main-container',
       helper: function() {
         return $('<div class="athlete-tab-dummy">' + $(this).children('.athlete-tab-contents')[0].outerHTML + '</div>');
       },
@@ -439,12 +446,16 @@ Template.athleteTab.rendered = function() {
     team && team.depend();
 
     Meteor.defer(function() {
-      _this.$('.athlete-tab:not(.disabled)').draggable("option", "disabled", false);
-      _this.$('.athlete-tab.disabled').draggable("option", "disabled", true);
+      if (!_this.view.isDestroyed) {
+        _this.$('.athlete-tab:not(.disabled)').draggable("option", "disabled", false);
+        _this.$('.athlete-tab.disabled').draggable("option", "disabled", true);
+      }
     });
   });
 
   this.ready.set(true);
+
+  console.log('Timed at', (new Date()) - this.timer); 
 
 }
 

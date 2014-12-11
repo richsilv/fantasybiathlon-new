@@ -17,6 +17,11 @@ Schemas.UserTeam = new SimpleSchema({
         min: 1,
         max: 25
     },
+    points: {
+        type: Number,
+        defaultValue: 0,
+        min: 0
+    },
     current: teamArray,
     transfers: {
         type: Number,
@@ -34,10 +39,7 @@ Schemas.UserTeam = new SimpleSchema({
         minCount: 4
     },
     'teamHistory.$.startDate': {
-        type: Date,
-        autoValue: function() {
-            return new Date();
-        }
+        type: Date
     },
     'teamHistory.$.endDate': {
         type: Date,

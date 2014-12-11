@@ -11,7 +11,7 @@ _.extend(App, {
             console.log(returnedUserId);
             Meteor.connection._userId = returnedUserId;
         });
-    }
+    },
 });
 
 App.helpers = {
@@ -47,6 +47,9 @@ App.helpers = {
     },
     toNum: function(num) {
         return parseInt(num, 10) || 0;
+    },
+    correct: function(num) {
+        return (!num || num === 999) ? "n/a" : num;
     },
     abbreviate: function(name) {
         return name.match(/[A-Z]/g).join(' ');
@@ -198,3 +201,7 @@ ReactiveObject.prototype.setKey = function(key, newValue) {
     }
     return this.value[key];
 };
+
+Meteor.startup(function() {
+    App.fontSize = Math.min(Math.round($(window).height() / 45), Math.round($(window).width() / 33));
+});

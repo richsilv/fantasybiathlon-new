@@ -3,11 +3,6 @@
 /*****************************************************************************/
 var open = new ReactiveVar();
 
-Meteor.startup(function() {
-  var nextEvent = Events.findOne({SeasonId: App.activeSeason, EndDate: {$gt: new Date()}}, {sort: {EndDate: 1}});
-  open.set(nextEvent && nextEvent.EventId);
-});
-
 Template.Calendar.events({
   /*
    * Example:
@@ -42,6 +37,8 @@ Template.Calendar.created = function () {
 };
 
 Template.Calendar.rendered = function () {
+  var nextEvent = Events.findOne({SeasonId: App.activeSeason, EndDate: {$gt: new Date()}}, {sort: {EndDate: 1}});
+  open.set(nextEvent && nextEvent.EventId);
 };
 
 Template.Calendar.destroyed = function () {

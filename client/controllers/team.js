@@ -1,6 +1,6 @@
 TeamController = RouteController.extend({
 
-  waitOn: function() {
+  subscriptions: function() {
     return [
       Subs.core
     ];
@@ -20,7 +20,8 @@ TeamController = RouteController.extend({
   data: function () {
     return {
       currentTeam: this.currentTeam,
-      newTeam: this.newTeam
+      newTeam: this.newTeam,
+      athleteBlock: this.state.get('athleteBlock')
     }
   },
 

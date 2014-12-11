@@ -2,6 +2,8 @@
 /* Races Methods */
 /*****************************************************************************/
 
+var crawlAsync = Async.wrap(Crawler.crawl);
+
 Meteor.methods({
 
 	'race_methods/add_jobs': function() {
@@ -61,9 +63,10 @@ function addJobs() {
 				return parser.recur().every(15).minute().after(race.StartTime).fullDate();
 			},
 			job: function() {
-				var result = 'Crawling at ' + new Date().toString() + '\n';
-				Crawler.crawl({RaceId: race.RaceId}, {recursive: true, storeResults: true});
-				var thisRace = Races.findOne(race._id);
+				var result = 'Crawling at ' + new Date().toString() + '\n',
+					event = crawlAsync({EventId: race.EventId}, {recursive: false, storeResults: true}),
+					raceCrawl = crawlAsync({RaceId: race.RaceId}, {recursive: true, storeResults: true}),
+					thisRace = Races.findOne(race._id);
 				if (thisRace.HasAnalysis) {
 					SyncedCron.remove(race.RaceId);
 					result += 'Crawling Missing at ' + new Date().toString() + '\n';
@@ -82,8 +85,8 @@ function addJobs() {
 						subject: 'Race Cron Running - ' + race.RaceId,
 						text: 'Race id ' + race.RaceId + ', the ' + race.ShortDescription + ' which started at ' + race.StartTime.toString() + '.\n' + result
 					});
-					return result;
 				}
+				return result;
 			}
 		});
 
@@ -118,6 +121,29 @@ function checkEvents() {
 						SyncedCron.remove(event.EventId + days.toString() + 'd');
 					}
 				});
+			}
+		});
+
+	});
+
+	events.forEach(function(event) {
+
+		var schedule = new moment(event.EndDate).add(12, 'h').toDate();
+
+		SyncedCron.add({
+			name: event.EventId + 't',
+			schedule: function(parser) {
+				return parser.recur().on(schedule).fullDate();
+			},
+			job: function() {
+				Email.send({
+					from: 'SyncedCron@fantasybiathlon.meteor.com',
+					to: 'fantasybiathlon@gmail.com',
+					subject: 'Adding Transfers',
+					text: 'Providing an extra 2 transfers after event ' + event.EventId + ' (' + event.Organizer + ').'
+				});
+				TeamMethods.giveTransfers({}, 2);
+				SyncedCron.remove(event.EventId + 't');
 			}
 		});
 

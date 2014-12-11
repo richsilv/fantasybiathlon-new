@@ -5,7 +5,7 @@ var welcomeShown = false;
 
 Template.Root.events({
     'click .nav-panel': function(event, template) {
-        Router.go(template.$(event.currentTarget).data('link'));
+        Bender.go(template.$(event.currentTarget).data('link'), {}, {animation: 'slideLeft'});
     }
 });
 
@@ -17,6 +17,13 @@ Template.Root.helpers({
 		var race = Races.findOne({StartTime: {$gt: new Date()}}, {sort: {StartTime: 1}}),
 			ev = Events.findOne({EventId: race && race.EventId});
 		return race && _.extend(race, ev);
+	},
+	position: function() {
+		var posObj = Counts.findOne({key: 'position'});
+		return posObj ? posObj.value + App.getOrdinal(posObj.value) : '---';
+	},
+	points: function() {
+		return Meteor.user().profile.team.points;
 	}
 });
 
