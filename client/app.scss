@@ -165,7 +165,7 @@ html body input[type], html body .uk-form input[type] {
 	left: 50%;
 	@include transform(translateX(-484px));
 	@include transition(opacity 0.5s);
-	opacity: 0;
+	opacity: 0.3;
 
 	i {
 		color: rgba(0, 0, 0, 0.4);
@@ -173,6 +173,10 @@ html body input[type], html body .uk-form input[type] {
 
 	&:hover {
 		opacity: 1;
+	}
+
+	&.disabled {
+		opacity: 0;
 	}
 
 	&.disabled:hover {
