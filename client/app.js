@@ -8,6 +8,7 @@ _.extend(App, {
     currentTeam: new ReactiveObject({}, 'currentTeam'),
     impersonate: function(password, userId) {
         Meteor.call('user_methods/impersonate', password, userId, function(err, returnedUserId) {
+            if (err) throw new Meteor.Error(err);
             console.log(returnedUserId);
             Meteor.connection._userId = returnedUserId;
         });

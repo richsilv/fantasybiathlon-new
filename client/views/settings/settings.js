@@ -32,7 +32,7 @@ Template.Settings.events({
 
 Template.Settings.helpers({
   admin: function() {
-    return Meteor.user().profile.admin;
+    return Meteor.user() && Meteor.user().profile && Meteor.user().profile.admin;
   }
   /*
    * Example:
