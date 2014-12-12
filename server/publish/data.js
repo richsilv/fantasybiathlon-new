@@ -203,7 +203,7 @@ Meteor.publish('counts', function() {
 	var interval = Meteor.setInterval(function() {
 		_this.added('counts', ids['teams'], {
 			key: 'teams',
-			value: Meteor.users.find().count()
+			value: Meteor.users.find({'profile.team': {$exists: true}, 'profile.team.current': {$size: 4}}).count()
 		});
 		_this.added('counts', ids['athletes'], {
 			key: 'athletes',
