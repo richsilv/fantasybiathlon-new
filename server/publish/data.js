@@ -175,11 +175,11 @@ Meteor.publish('team_ranking', function(query, skip, limit) {
 	});
 
 	function myPos() {
-		return Meteor.users.find({
+		return user ? Meteor.users.find({
 			'profile.team.points': {
 				$gt: user.profile.team.points
 			}
-		}).count() + 1;
+		}).count() + 1 : 0;
 	}
 });
 

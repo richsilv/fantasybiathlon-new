@@ -132,6 +132,20 @@ Template.athlete.events({
   },
   'dragstop .athlete': function(event, template) {
     AppState.set('dragOverlay', 0);
+  },
+  'click .athlete': function(event, template) {
+    if (teamState.get('changeAthlete') && this.IBUId) {
+      var modal = {
+        template: 'athleteInfo',
+        data: {
+          IBUId: this.IBUId
+        }
+      };
+      Meteor.subscribe('athlete_history', this.IBUId);
+      teamState.set('modal', modal);
+      $('.ui-draggable-dragging').remove();
+      teamState.modal = App.generalModal('athleteModal');
+    }
   }
 });
 
