@@ -185,7 +185,8 @@ Template.teamDetails.events({
                 (transfers ? (" This will use up " + transfers + " transfer" + (transfers > 1 ? "s" : "") + ".</p>") : "</p>"),
       callback: function() {
         Meteor.call('team_methods/update_team', newTeam.memberIds(), function(err, res) {
-          if (res) {
+          if (err) console.log(err);
+          else if (res) {
             modal = $.UIkit.modal(".uk-modal");
             modal && modal.hide();
             $('html').removeClass('uk-modal-page');

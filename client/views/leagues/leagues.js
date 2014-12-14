@@ -24,6 +24,7 @@ Template.Leagues.rendered = function() {
         key: 'position'
       }),
       startPage = positionDoc ? (Math.ceil((positionDoc.value - 1) / router.state.get('limit'))) + 1 : 1;
+  Router.current().state.set('skip', router.state.set('limit') * (startPage - 1));
   this.autorun(function(c) {
     _this.pagination = $.UIkit.pagination(_this.$('.uk-pagination'), {
       items: router.data().teamCount,
