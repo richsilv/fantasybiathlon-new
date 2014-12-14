@@ -67,7 +67,7 @@ FantasyTeam = function(memberIds) {
 		var result,
 			memoKey = _this.memberIds().join('');
 		if (eligibilityMemo[memoKey]) return eligibilityMemo[memoKey];
-		var remainder = maxValue - _this.value(),
+		var remainder = maxValue - _this.value() + 0.01,
 			genders = _.countBy(_this.members, 'GenderId'),
 			ineligibleNations = _.reduce(_.countBy(_this.members, 'NAT'), function(arr, val, key) {
 				if (val > 1) arr.push(key);
