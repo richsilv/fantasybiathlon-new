@@ -237,7 +237,7 @@ FantasyTeam.prototype.check = function(throwErrors) {
 		return false;
 	}
 
-	if (this.value() > this.maxValue()) {
+	if (this.value() > this.maxValue() + 0.01) {
 		if (throwErrors) throw new Meteor.Error('ineligible_team', 'Team is too expensive', this.value());
 		return false;
 	}
