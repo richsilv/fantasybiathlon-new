@@ -36,7 +36,10 @@ Template.loginWithEmail.events({
         instance = Template.instance();
     Meteor.loginWithPassword(email, password, function(err, res) {
       if (err) instance.error.set(err.reason);
-      else $('.uk-modal').hide();
+      else {
+        $('.uk-modal').hide();
+        $('.uk-modal').remove();
+      }
     });    
   },
   'click [data-action="email-sign-up"]': function(event, template) {
@@ -54,7 +57,10 @@ Template.loginWithEmail.events({
     }
     Accounts.createUser({email: email, password: password}, function(err, res) {
       if (err) instance.error.set(err.reason);
-      else $('.uk-modal').hide();
+      else {
+        $('.uk-modal').hide();
+        $('.uk-modal').remove();
+      }     
     });
   },
   'click [data-action="forgotten-password"]': function(event, template) {

@@ -71,6 +71,7 @@ Template.Admin.events({
       content: '<p><strong>Are you sure???</strong></p>',
       callback: function() {
         $('.uk-modal').hide();
+        $('.uk-modal').remove();
         $('html').removeClass('uk-modal-page');
         Meteor.call('crawler/clear_database', function(err, res) {
           Meteor.setTimeout(function() {

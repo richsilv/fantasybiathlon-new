@@ -10,7 +10,8 @@ Template.Settings.events({
       content: '<p>Are you <strong>sure</strong> you want to delete your account?  This cannot be reversed.</p>',
       callback: function() {
         Meteor.call('user_methods/delete_account', function(err, res) {
-          $('.uk-modal').hide()
+          $('.uk-modal').hide();
+          $('.uk-modal').remove();
           $('html').removeClass('uk-modal-page');
         });
       }
