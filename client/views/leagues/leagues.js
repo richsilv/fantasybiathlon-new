@@ -23,7 +23,7 @@ Template.Leagues.rendered = function() {
       positionDoc = Counts.findOne({
         key: 'position'
       }),
-      startPage = positionDoc ? (Math.ceil((positionDoc.value - 1) / router.state.get('limit'))) + 1 : 1;
+      startPage = positionDoc ? (Math.floor((positionDoc.value - 1) / router.state.get('limit'))) + 1 : 1;
   Router.current().state.set('skip', Router.current().state.get('limit') * (startPage - 1));
   this.autorun(function(c) {
     _this.pagination = $.UIkit.pagination(_this.$('.uk-pagination'), {
