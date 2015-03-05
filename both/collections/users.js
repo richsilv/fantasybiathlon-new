@@ -112,6 +112,11 @@ Schemas.User = new SimpleSchema({
     profile: {
         type: Schemas.UserProfile,
         optional: true
+    },
+    status: {
+        type: Object,
+        optional: true,
+        blackbox: true
     }
 });
 

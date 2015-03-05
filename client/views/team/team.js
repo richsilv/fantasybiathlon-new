@@ -208,19 +208,22 @@ Template.athleteTab.helpers({
   }
 });
 
+var showModal = function(event, template) {
+  var modal = {
+    template: 'athleteInfo',
+    data: {
+      IBUId: this.IBUId
+    }
+  };
+  Meteor.subscribe('athlete_history', this.IBUId);
+  teamState.set('modal', modal);
+  $('.ui-draggable-dragging').remove();
+  teamState.modal = App.generalModal('athleteModal');
+}  
+
+
 Template.athleteTab.events({
-  'click .athlete-tab': function(event, template) {
-    var modal = {
-      template: 'athleteInfo',
-      data: {
-        IBUId: this.IBUId
-      }
-    };
-    Meteor.subscribe('athlete_history', this.IBUId);
-    teamState.set('modal', modal);
-    $('.ui-draggable-dragging').remove();
-    teamState.modal = App.generalModal('athleteModal');
-  }
+  'click .athlete-tab': showModal.bind(this)
 });
 
 Template.athleteInfo.helpers({

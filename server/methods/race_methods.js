@@ -119,6 +119,7 @@ function checkEvents() {
 						});
 						Crawler.crawl({EventId: event.EventId}, {recursive: true, storeResults: true});
 						SyncedCron.remove(event.EventId + days.toString() + 'd');
+						return 'Checked schedule for ' + event.EventId + ' (' + event.Organizer + ').';
 					}
 				});
 			}
@@ -144,6 +145,7 @@ function checkEvents() {
 				});
 				TeamMethods.giveTransfers({}, 2);
 				SyncedCron.remove(event.EventId + 't');
+				return 'Provided an extra 2 transfers after event ' + event.EventId + ' (' + event.Organizer + ').';
 			}
 		});
 
