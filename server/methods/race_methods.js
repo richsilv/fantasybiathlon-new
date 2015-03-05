@@ -97,7 +97,8 @@ function addJobs() {
 function checkEvents() {
 
 	var now = new Date(),
-		events = Events.find({StartDate: {$gt: now}});
+		events = Events.find({StartDate: {$gt: now}}),
+		eventsIncludingStarted = Events.find({EndDate: {$gt: now}});
 
 	events.forEach(function(event) {
 
@@ -127,7 +128,7 @@ function checkEvents() {
 
 	});
 
-	events.forEach(function(event) {
+	eventsIncludingStarted.forEach(function(event) {
 
 		var schedule = new moment(event.EndDate).add(12, 'h').toDate();
 

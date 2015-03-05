@@ -128,10 +128,12 @@ Template.athlete.events({
   'dragstart .athlete': function(event, template) {
     if (teamState.get('changeAthlete')) {
       AppState.set('dragOverlay', 1);
+      $(event.currentTarget).bind('click.prevent', function(event) { event.stopImmediatePropagation() ; });
     }
   },
   'dragstop .athlete': function(event, template) {
     AppState.set('dragOverlay', 0);
+    setTimeout(function(){$(event.currentTarget).unbind('click.prevent');}, 300);
   },
   'click .athlete': function(event, template) {
     if (teamState.get('changeAthlete') && this.IBUId) {
