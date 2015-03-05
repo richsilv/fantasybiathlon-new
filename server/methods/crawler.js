@@ -780,7 +780,7 @@ function updateRacePoints(raceId, results) {
 				r.ShootingRank = _.indexOf(shootOrder, r._id);
 				points += smallpoints[r.ShootingRank] || 0;
 			}
-			if (r.EventId.substr(r.RaceId.length - 2) === "__") points = points * 2;
+			if (r.EventId.substr(r.EventId.length - 2) === "__") points = points * 2;
 
 		}
 
